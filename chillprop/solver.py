@@ -31,13 +31,45 @@ def find_rho_PT(params: FluidParameters, P_target: jax.Array, T: jax.Array, rho_
     
     return rho_final
 
+from chillprop.phases import rhol_anc, rhov_anc, psat_anc
+
 @eqx.filter_jit
 def solve_rho_PT(params: FluidParameters, P: jax.Array, T: jax.Array) -> jax.Array:
     """
-    High-level density solver with guess generation.
+    High-level density solver with phase-aware guess generation.
     """
-    # Simple ideal gas guess: rho = P / (params.R * T)
-    rho_guess = P / (params.R * T)
+    # 1. Calculate Ancillary (Saturation) Properties
+    # Clip T to be slightly below Tc for ancillary evaluation to avoid NaNs in supercritical region
+    # (JAX evaluates both branches of where)
+    T_sat = jnp.minimum(T, params.Tc - 0.001)
+    
+    Psat = psat_anc(params, T_sat)
+    rho_L_anc = rhol_anc(params, T_sat)
+    rho_V_anc = rhov_anc(params, T_sat)
+    rho_ideal = P / (params.R * T)
+    
+    # 2. Determine Phase Regime for Guesses
+    is_subcritical = T < params.Tc
+    
+    # Subcritical Logic: Compare P to Psat
+    # If P > Psat, we are compressed liquid -> Use rho_L_anc
+    # If P < Psat, we are superheated vapor -> Use rho_ideal
+    # (rho_V_anc is only good at Psat; rho_ideal is good globally for gas)
+    is_liquid_pressure = P > Psat
+    guess_sub = jnp.where(is_liquid_pressure, rho_L_anc, rho_ideal)
+    
+    # Supercritical Logic:
+    # If P > Pc, we are dense supercritical fluid -> Guess rho_critical as a safe anchor?
+    # actually ideal gas is very bad for high P.
+    # Let's use rho_c for high pressure, ideal gas for low pressure.
+    is_high_pressure = P > params.Pc
+    guess_sup = jnp.where(is_high_pressure, params.rhoc, rho_ideal)
+
+    # Combine guesses
+    rho_guess = jnp.where(is_subcritical, guess_sub, guess_sup)
+    
+    # Fallback: if ancillary returns NaN (e.g. valid range issues), use ideal gas
+    rho_guess = jnp.where(jnp.isnan(rho_guess), rho_ideal, rho_guess)
     
     # Run Newton solver
     return find_rho_PT(params, P, T, rho_guess)
