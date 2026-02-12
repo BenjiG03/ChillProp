@@ -6,7 +6,7 @@ This document details the validation of ChillProp against CoolProp (v6.4.1) for 
 
 We validated the Equation of State (HEOS) parity by comparing density calculations across a wide range of pressures ($10^5$ to $10^{7.5}$ Pa) and temperatures ($T_{min}$ to $500$ K).
 
-![Density Parity](/density_parity_Nitrogen.png)
+![Density Parity](docs/assets/density_parity_Nitrogen.png)
 
 **Result:** Near-perfect alignment ($y=x$) confirms that the JAX implementation of the Ideal and Residual Helmholtz energy terms is correct.
 
@@ -14,7 +14,7 @@ We validated the Equation of State (HEOS) parity by comparing density calculatio
 
 ChillProp implements a custom VLE solver using the Maxwell Construction (equality of pressure and chemical potential).
 
-![VLE Envelope](/vle_envelope_Nitrogen.png)
+![VLE Envelope](docs/assets/vle_envelope_Nitrogen.png)
 
 **Result:** ChillProp accurately reproduces the saturation dome. The critical point and phase boundaries match CoolProp's reference values.
 
@@ -23,13 +23,14 @@ ChillProp implements a custom VLE solver using the Maxwell Construction (equalit
 We implemented the specific viscosity and thermal conductivity models related to Nitrogen.
 
 ### Viscosity
-![Viscosity](/viscosity_Nitrogen.png)
+![Viscosity](docs/assets/viscosity_Nitrogen.png)
 
 **Model:** Collision Integral (Dilute) + Modified Batschinski-Hildebrand (Residual).
 **Result:** Exact match with CoolProp.
 
 ### Thermal Conductivity
-![Conductivity](/conductivity_Nitrogen.png)
+![Conductivity](docs/assets/conductivity_Nitrogen.png)
+
 
 **Model:** Eta0-Polynomial (Dilute) + Polynomial-Exponential (Residual).
 **Result:** High accuracy (< 0.5% relative error) across the gas and liquid regimes. Note that critical enhancement is currently simplified.
