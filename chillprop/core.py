@@ -4,8 +4,8 @@ from chillprop.parameters import FluidParameters
 from chillprop.heos import alpha0, alphar
 
 def get_alpha_and_derivs(params: FluidParameters, rho: jax.Array, T: jax.Array):
-    tau = params.Tc / T
-    delta = rho / params.rhoc
+    tau = params.Tr / T
+    delta = rho / params.rhor
     
     # We need partials w.r.t tau and delta
     # alpha0(params, tau, delta)
@@ -48,8 +48,8 @@ def pressure(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array
     # This matches.
     
     # We can calculate just ar derivatives for efficiency if we only need P.
-    tau = params.Tc / T
-    delta = rho / params.rhoc
+    tau = params.Tr / T
+    delta = rho / params.rhor
     
     dar_ddelta = jax.grad(alphar, argnums=2)(params, tau, delta)
     
@@ -73,6 +73,39 @@ def internal_energy(params: FluidParameters, rho: jax.Array, T: jax.Array) -> ja
     vals = get_alpha_and_derivs(params, rho, T)
     tau = vals['tau']
     return params.R * T * tau * (vals['da0_dtau'] + vals['dar_dtau'])
+
+def cvmolar(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    tau = params.Tr / T
+    delta = rho / params.rhor
+    
+    # helper for grads
+    def alpha_total(t, d):
+        return alpha0(params, t, d) + alphar(params, t, d)
+    
+    # d2alpha_dtau2
+    d2 = jax.grad(jax.grad(alpha_total, argnums=0), argnums=0)(tau, delta)
+    return -params.R * (tau**2) * d2
+
+def cpmolar(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    tau = params.Tr / T
+    delta = rho / params.rhor
+    
+    # Need several derivatives
+    def a_tot(t, d): return alpha0(params, t, d) + alphar(params, t, d)
+    def ar(t, d): return alphar(params, t, d)
+    
+    # C_v part
+    cv = cvmolar(params, rho, T)
+    
+    # Derivatives for Cp-Cv
+    dar_ddelta = jax.grad(ar, argnums=1)(tau, delta)
+    dar_ddelta2 = jax.grad(jax.grad(ar, argnums=1), argnums=1)(tau, delta)
+    dar_ddelta_dtau = jax.grad(jax.grad(ar, argnums=1), argnums=0)(tau, delta)
+    
+    num = (1.0 + delta * dar_ddelta - delta * tau * dar_ddelta_dtau)**2
+    den = (1.0 + 2.0 * delta * dar_ddelta + delta**2 * dar_ddelta2)
+    
+    return cv + params.R * num / den
 
 def props(params: FluidParameters, rho: jax.Array, T: jax.Array) -> dict:
     vals = get_alpha_and_derivs(params, rho, T)

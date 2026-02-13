@@ -9,15 +9,20 @@ def evaluate_ancillary(anc: AncillaryEquation, T: jax.Array) -> jax.Array:
     theta = 1.0 - T / anc.T_r
     sigma = jnp.sum(anc.n * (theta ** anc.t))
     
+    # If using_tau_r is true, scale exponent by Tr/T
+    exponent = jnp.where(anc.using_tau_r, sigma * (anc.T_r / T), sigma)
+    
     val = jnp.where(
-        (anc.type == 'pL') | (anc.type == 'rhoV'),
-        anc.reducing_value * jnp.exp((anc.T_r / T) * sigma),
+        (anc.type == 'pL') | (anc.type == 'pV') | (anc.type == 'rhoV') | (anc.type == 'pS'),
+        anc.reducing_value * jnp.exp(exponent),
         jnp.where(
             anc.type == 'rhoLnoexp',
             anc.reducing_value * (1.0 + sigma),
             0.0
         )
     )
+    jax.debug.print("DEBUG: anc type={type} T={T} theta={theta} sigma={sigma} exp={exp} val={val}", 
+                   type=anc.type, T=T, theta=theta, sigma=sigma, exp=exponent, val=val)
     return val
 
 def rhol_anc(params: FluidParameters, T: jax.Array) -> jax.Array:
@@ -29,8 +34,14 @@ def rhov_anc(params: FluidParameters, T: jax.Array) -> jax.Array:
     return evaluate_ancillary(params.ancillary_rhoV, T)
 
 def psat_anc(params: FluidParameters, T: jax.Array) -> jax.Array:
-    if params.ancillary_p is None: return jnp.nan
-    return evaluate_ancillary(params.ancillary_p, T)
+    if params.ancillary_pS is not None:
+        return evaluate_ancillary(params.ancillary_pS, T)
+    if params.ancillary_pL is not None:
+        # Default to bubble point if pure Psatt is missing
+        return evaluate_ancillary(params.ancillary_pL, T)
+    if params.ancillary_pV is not None:
+        return evaluate_ancillary(params.ancillary_pV, T)
+    return jnp.nan
 
 def chemical_potential(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
     """Molar chemical potential mu = A + PV = RT(alpha + 1 + delta*alphar_delta)"""
@@ -49,9 +60,11 @@ def solve_vle(params: FluidParameters, T: jax.Array, max_iter: int = 20) -> jax.
     """
     Solve for (rho_liq, rho_vap) at temperature T using Newton-Raphson.
     """
-    T = jnp.asarray(T)
     rl_guess = rhol_anc(params, T)
     rv_guess = rhov_anc(params, T)
+    
+    if params.pseudo_pure:
+        return jnp.array([rl_guess, rv_guess])
     
     def step(x, _):
         rl, rv = x[0], x[1]

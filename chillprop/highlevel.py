@@ -5,7 +5,7 @@ from typing import Union
 from chillprop.parameters import FluidParameters
 from chillprop.core import pressure, enthalpy, entropy, internal_energy
 from chillprop.solver import solve_rho_PT, solve_rhoT_Ph, solve_rhoT_Ps
-from chillprop.phases import solve_vle, vapor_quality, get_phase
+from chillprop.phases import solve_vle, vapor_quality, get_phase, rhol_anc, rhov_anc, evaluate_ancillary
 from chillprop.transport import viscosity, thermal_conductivity
 import CoolProp.CoolProp as CP
 from scripts.extract_params import extract_fluid_params
@@ -111,15 +111,28 @@ def _PropsSI_internal(params, out_key, k1, v1, k2, v2):
     # Determine if we are in two-phase region to weight properties
     # Note: T and rho are now known.
     rho_l, rho_v = solve_vle(params, T)
-    is_twophase = (T < params.Tc) & (rho > rho_v) & (rho < rho_l)
-    Q = vapor_quality(rho, rho_l, rho_v)
+    # Use small epsilon for boundary checks
+    is_twophase = (T < params.Tc) & (rho >= rho_v * 0.999) & (rho <= rho_l * 1.001)
+    Q_calc = vapor_quality(rho, rho_l, rho_v)
     
     def get_prop(func_molar, mass_mult=1.0):
         if is_twophase:
-            # Weighted average
-            val_l = func_molar(params, rho_l, T)
-            val_v = func_molar(params, rho_v, T)
-            val = (1.0 - Q) * val_l + Q * val_v
+            # For pseudo-pure, we must be careful with P
+            if params.pseudo_pure:
+                # Weighted P, H, S etc. between bubble and dew ancillaries
+                pl = evaluate_ancillary(params.ancillary_pL, T) if params.ancillary_pL else pressure(params, rho_l, T)
+                pv = evaluate_ancillary(params.ancillary_pV, T) if params.ancillary_pV else pressure(params, rho_v, T)
+                val_l = func_molar(params, rho_l, T)
+                val_v = func_molar(params, rho_v, T)
+                # If the function is pressure, we use the weighted P
+                if func_molar == pressure:
+                    val = (1.0 - Q_calc) * pl + Q_calc * pv
+                else:
+                    val = (1.0 - Q_calc) * val_l + Q_calc * val_v
+            else:
+                val_l = func_molar(params, rho_l, T)
+                val_v = func_molar(params, rho_v, T)
+                val = (1.0 - Q) * val_l + Q * val_v
         else:
             val = func_molar(params, rho, T)
         return float(val * mass_mult)
