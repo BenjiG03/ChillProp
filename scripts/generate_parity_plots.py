@@ -20,7 +20,9 @@ def generate_plots():
     os.makedirs("validation_plots", exist_ok=True)
     
     # Define range
-    T_range = np.linspace(70, 1000, 50)
+    # Original: 70 to 1000 with 50 steps (~18.6 K/step)
+    # New: 70 to 4000 with similar step size => ~211 steps
+    T_range = np.linspace(70, 4000, 212)
     P_values = [1e5, 1e6, 5e6, 2e7] # Isobars
     
     properties = [
@@ -66,6 +68,7 @@ def generate_plots():
             # Plot relative error
             cp_arr = np.array(cp_vals)
             chill_arr = np.array(chill_vals)
+            valid_T_arr = np.array(valid_T)
             
             # Avoid division by zero
             mask = cp_arr != 0
@@ -74,6 +77,20 @@ def generate_plots():
             
             plt.plot(valid_T, rel_error, 'o-', label=f'P={P/1e6:.1f} MPa')
             
+            # Statistics
+            # Split into Low T (< 150K) and High T (>= 150K)
+            low_t_mask = valid_T_arr < 150.0
+            high_t_mask = valid_T_arr >= 150.0
+            
+            def get_stats(err_arr):
+                if len(err_arr) == 0: return 0.0, 0.0
+                return np.max(err_arr), np.sqrt(np.mean(err_arr**2))
+
+            max_low, rmse_low = get_stats(rel_error[low_t_mask])
+            max_high, rmse_high = get_stats(rel_error[high_t_mask])
+            
+            print(f"  P={P/1e6:5.1f} MPa | Low T (<150K): Max={max_low:.2e}, RMSE={rmse_low:.2e} | High T: Max={max_high:.2e}, RMSE={rmse_high:.2e}")
+
         plt.yscale('log')
         plt.xlabel('Temperature (K)')
         plt.ylabel(f'Relative Error in {prop_name}')

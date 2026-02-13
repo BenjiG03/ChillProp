@@ -4,7 +4,7 @@ import equinox as eqx
 from chillprop.parameters import FluidParameters
 from chillprop.core import pressure
 
-def find_rho_PT(params: FluidParameters, P_target: jax.Array, T: jax.Array, rho_guess: jax.Array, max_iter: int = 20, tol: float = 1e-9) -> jax.Array:
+def find_rho_PT(params: FluidParameters, P_target: jax.Array, T: jax.Array, rho_guess: jax.Array, max_iter: int = 50, tol: float = 1e-9) -> jax.Array:
     """
     Find density rho for a given Pressure and Temperature using Newton-Raphson.
     f(rho) = P(rho, T) - P_target = 0
@@ -53,10 +53,13 @@ def solve_rho_PT(params: FluidParameters, P: jax.Array, T: jax.Array) -> jax.Arr
     
     # Subcritical Logic: Compare P to Psat
     # If P > Psat, we are compressed liquid -> Use rho_L_anc
-    # If P < Psat, we are superheated vapor -> Use rho_ideal
-    # (rho_V_anc is only good at Psat; rho_ideal is good globally for gas)
+    # If P < Psat, we are superheated vapor -> Use scaled rho_V_anc for better accuracy near saturation
+    # rho approx P/Psat * rho_V_anc (assuming Z constant along isotherm)
+    # This transitions to rho_V_anc at dome, and is better than ideal gas if Z != 1.
+    rho_vapor_guess = rho_V_anc * (P / Psat)
+    
     is_liquid_pressure = P > Psat
-    guess_sub = jnp.where(is_liquid_pressure, rho_L_anc, rho_ideal)
+    guess_sub = jnp.where(is_liquid_pressure, rho_L_anc, rho_vapor_guess)
     
     # Supercritical Logic:
     # If P > Pc, we are dense supercritical fluid -> Guess rho_critical as a safe anchor?

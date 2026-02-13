@@ -21,8 +21,6 @@ def evaluate_ancillary(anc: AncillaryEquation, T: jax.Array) -> jax.Array:
             0.0
         )
     )
-    jax.debug.print("DEBUG: anc type={type} T={T} theta={theta} sigma={sigma} exp={exp} val={val}", 
-                   type=anc.type, T=T, theta=theta, sigma=sigma, exp=exponent, val=val)
     return val
 
 def rhol_anc(params: FluidParameters, T: jax.Array) -> jax.Array:

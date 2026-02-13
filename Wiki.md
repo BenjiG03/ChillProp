@@ -53,9 +53,11 @@ We validated ChillProp against CoolProp (v6.4.1) for **Air**, a pseudo-pure flui
 
 ## 1. Thermodynamic Properties
 
-High-precision parity was achieved for Air after implementing the `IdealGasHelmholtzPlanckEinsteinGeneralized` term and enabling JAX `x64` precision.
+High-precision parity was achieved for Air after implementing the `IdealGasHelmholtzPlanckEinsteinGeneralized` term, enabling JAX `x64` precision, and optimizing the density solver for low temperatures.
 
 ### Density and Enthalpy
+Validation range: **70 K to 4000 K**, Pressures up to 20 MPa.
+
 ![Density Parity](docs/assets/Density_parity.png)
 ![Enthalpy Parity](docs/assets/Enthalpy_parity.png)
 
