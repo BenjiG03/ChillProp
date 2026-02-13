@@ -174,6 +174,9 @@ class ConductivitySimplifiedOlchowySengers(eqx.Module):
     qD: float
     T_ref: float
 
+class ConductivityDiluteCO2HuberJPCRD2016(eqx.Module):
+    pass
+
 class ConductivityParameters(eqx.Module):
     dilute: Union[ConductivityRatioOfPolynomials, ConductivityDiluteEta0AndPoly, dict]
     residual: Optional[Union[ConductivityResidualPolynomialAndExponential, dict]]
@@ -444,6 +447,8 @@ class FluidParameters(eqx.Module):
                 A=jnp.array(dilute_data['A']),
                 t=jnp.array(dilute_data['t'])
             )
+        elif dtype == 'CarbonDioxideHuberJPCRD2016':
+            dilute = ConductivityDiluteCO2HuberJPCRD2016()
         else:
             dilute = dilute_data.copy()
             if 'A' in dilute: dilute['A'] = jnp.array(dilute['A'])
@@ -453,7 +458,12 @@ class FluidParameters(eqx.Module):
         residual = None
         rtype = res_data.get('type')
         if rtype in ['polynomial', 'polynomial_and_exponential']:
-            A = jnp.array(res_data['A'])
+            val_A = res_data.get('A')
+            val_B = res_data.get('B')
+            coeffs = val_B if val_B is not None else val_A
+            if coeffs is None: coeffs = []
+            
+            A = jnp.array(coeffs)
             residual = ConductivityResidualPolynomialAndExponential(
                 A=A,
                 d=jnp.array(res_data['d']),

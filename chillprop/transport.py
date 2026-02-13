@@ -7,7 +7,8 @@ from chillprop.parameters import (
     ConductivityResidualPolynomialAndExponential, ConductivitySimplifiedOlchowySengers,
     ViscosityPowersOfTr, ViscosityDiluteCollisionIntegral,
     ViscosityRainwaterFriend, ViscosityInitialDensityEmpirical,
-    ViscosityFrictionTheory, ViscosityModifiedBatschinskiHildebrand
+    ViscosityFrictionTheory, ViscosityModifiedBatschinskiHildebrand,
+    ConductivityDiluteCO2HuberJPCRD2016
 )
 from chillprop import core
 
@@ -54,10 +55,18 @@ def viscosity_initial_density(params: FluidParameters, rho: jax.Array, T: jax.Ar
     
     id = v.initial_density
     if isinstance(id, ViscosityRainwaterFriend):
-        delta = rho / params.rhoc
-        tau = params.Tc / T
-        B = jnp.sum(id.b * (tau ** id.t))
-        return B * delta
+        # CoolProp/src/Backends/Helmholtz/TransportRoutines.cpp:138
+        # Uses Tstar and sigma
+        Tstar = T / v.epsilon_over_k
+        B_star = jnp.sum(id.b * (Tstar ** id.t))
+        
+        sigma = v.sigma_eta # [m]
+        NA = 6.02214076e23
+        B_eta = NA * (sigma**3) * B_star # [m^3/mol]
+        
+        # Contribution is eta_dilute * B_eta * rho
+        eta0 = viscosity_dilute(params, T)
+        return eta0 * B_eta * rho
     elif isinstance(id, ViscosityInitialDensityEmpirical):
         delta = rho / id.rhomolar_reducing
         tau = id.T_reducing / T
@@ -89,6 +98,47 @@ def viscosity_higher_order(params: FluidParameters, rho: jax.Array, T: jax.Array
         delta0 = jnp.sum(ho.g * (tau ** ho.h)) / jnp.sum(ho.p * (tau ** ho.q))
         
         return S + F * (1.0 / (delta0 - delta) - 1.0 / delta0)
+    elif isinstance(ho, dict) and 'hardcoded' in ho:
+        hc = ho['hardcoded']
+        if hc == 'CarbonDioxideLaeseckeJPCRD2017':
+            # Eq. (9) from Laesecke, JPCRD, 2017
+            Tt = 216.592
+            rho_tL = 1178.53
+            R = 188.9241525
+            M = 44.0095e-3 # kg/mol? Wait params.M is kg/mol.
+            # CoolProp implementation hardcodes 84446887.43579945 
+            # eta_tL = pow(rho_tL, 2.0 / 3.0) * sqrt(HEOS.gas_constant() * Tt) / (pow(HEOS.molar_mass(), 1.0 / 6.0) * 84446887.43579945);
+            
+            # Use param values
+            # Need to be careful with units.
+            # HEOS.rhomass()
+            rhomass = rho * params.M
+            
+            Tr = T / Tt
+            rhor = rhomass / rho_tL
+            
+            # Hardcoded constant in CoolProp seems specific
+            # Let's try to match exactly
+            denom = (params.M**(1.0/6.0)) * 84446887.43579945
+            eta_tL = (rho_tL**(2.0/3.0)) * jnp.sqrt(params.R * Tt) / denom
+            
+            c1 = 0.360603235428487
+            c2 = 0.121550806591497
+            gamma = 8.06282737481277
+            
+            residual = eta_tL * (c1 * Tr * (rhor**3) + ((rhor**2) + (rhor**gamma)) / (Tr - c2))
+            return residual
+            
+        elif hc == 'Hydrogen':
+            # CoolProp/src/Backends/Helmholtz/TransportRoutines.cpp:308
+            Tr = T / 33.145
+            rhomass = rho * params.M
+            rhor = rhomass * 0.011 # Note: weird normalization in CoolProp source
+            
+            c = jnp.array([0, 6.43449673e-6, 4.56334068e-2, 2.32797868e-1, 9.58326120e-1, 1.27941189e-1, 3.63576595e-1])
+            
+            term = c[2]*Tr + c[3]/Tr + c[4]*(rhor**2)/(c[5] + Tr) + c[6]*(rhor**6)
+            return c[1] * (rhor**2) * jnp.exp(term)
     
     return 0.0
 
@@ -134,6 +184,17 @@ def thermal_conductivity_dilute(params: FluidParameters, T: jax.Array) -> jax.Ar
             tau = params.Tr / T
             lambda_val += jnp.sum(d.A[1:] * (tau ** d.t[1:]))
         return lambda_val
+
+    elif isinstance(d, ConductivityDiluteCO2HuberJPCRD2016):
+        # Huber 2016 Eq. (3)
+        tau = params.Tr / T
+        l = jnp.array([0.0151874307, 0.0280674040, 0.0228564190, -0.00741624210])
+        # lambda_0 = pow(tau, -0.5) / (l[0] + l[1] * tau + l[2] * pow(tau, 2) + l[3] * pow(tau, 3));  // [mW/m/K]
+        # return lambda_0 / 1000;
+        
+        denom = l[0] + l[1]*tau + l[2]*(tau**2) + l[3]*(tau**3)
+        lambda_0_mW = (tau**(-0.5)) / denom
+        return lambda_0_mW / 1000.0
     elif isinstance(d, dict) and d.get('type') == 'kinetic_theory':
         # Modified Eucken correlation
         eta0 = viscosity_dilute(params, T)
@@ -160,13 +221,18 @@ def thermal_conductivity_residual(params: FluidParameters, rho: jax.Array, T: ja
         tau = Tr_red / T
         
         return jnp.sum(res.A * (delta**res.d) * (tau**res.t) * jnp.exp(-res.gamma * (delta**res.l)))
+
     elif isinstance(res, dict) and res.get('type') == 'polynomial':
         # Handle dict fallback for polynomial if any
         Tr_red = float(res.get('T_reducing', params.Tc))
         rho_red = float(res.get('rhomolar_reducing', params.rhoc))
         delta = rho / rho_red
         tau = Tr_red / T
-        return jnp.sum(jnp.array(res['A']) * (delta**jnp.array(res['d'])) * (tau**jnp.array(res['t'])))
+        
+        coeffs = res.get('B', res.get('A'))
+        if coeffs is None: return 0.0
+        
+        return jnp.sum(jnp.array(coeffs) * (delta**jnp.array(res['d'])) * (tau**jnp.array(res['t'])))
         
     return 0.0
 

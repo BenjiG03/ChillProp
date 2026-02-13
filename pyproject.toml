@@ -1,9 +1,9 @@
 [project]
 name = "chillprop"
-version = "0.0.2"
+version = "0.0.21"
 description = "A JAX-based mirror of CoolProp (Under Construction)"
 readme = "README.md"
-authors = [{name = "Benji", email = "benji@example.com"}]
+authors = [{name = "Benji", email = "benjamingomezdelcampo@gmail.com"}]
 dependencies = [
     "jax",
     "jaxlib",

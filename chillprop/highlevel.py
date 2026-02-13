@@ -3,7 +3,7 @@ import jax.numpy as jnp
 import equinox as eqx
 from typing import Union
 from chillprop.parameters import FluidParameters
-from chillprop.core import pressure, enthalpy, entropy, internal_energy
+from chillprop.core import pressure, enthalpy, entropy, internal_energy, speed_sound
 from chillprop.solver import solve_rho_PT, solve_rhoT_Ph, solve_rhoT_Ps
 from chillprop.phases import solve_vle, vapor_quality, get_phase, rhol_anc, rhov_anc, evaluate_ancillary
 from chillprop.transport import viscosity, thermal_conductivity
@@ -152,6 +152,7 @@ def _PropsSI_internal(params, out_key, k1, v1, k2, v2):
         return float(Q)
     if out_key in ['V', 'viscosity']: return float(viscosity(params, rho, T))
     if out_key in ['L', 'conductivity']: return float(thermal_conductivity(params, rho, T))
+    if out_key in ['A', 'speed_sound']: return float(speed_sound(params, rho, T))
     
     raise ValueError(f"Output key {out_key} not supported")
 

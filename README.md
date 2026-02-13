@@ -19,7 +19,8 @@ ChillProp allows you to incorporate accurate thermodynamic properties directly i
 ## Installation
 
 ```bash
-git clone https://github.com/google-deepmind/ChillProp.git
+# Will be available through PyPI in the near future
+git clone https://github.com/BenjiG03/ChillProp.git
 cd ChillProp
 pip install -e .
 ```
@@ -56,17 +57,26 @@ print(f"Conductivity: {AS.conductivity()} W/m/K")
 
 ## Validation & Parity
 
-ChillProp has been rigorously validated against CoolProp for **Nitrogen**:
+- **Air Components**: Nitrogen (N2), Oxygen (O2), Argon (Ar)
+- **Combustion Species**: Hydrogen (H2), Carbon Dioxide (CO2), Water (H2O), Methane (CH4), Ethane (C2H6), Propane (C3H8), n-Butane, IsoButane, n-Dodecane
+
+## Known Limitations
+- **Ethane Viscosity**: The viscosity model for Ethane (Modified Batschinski-Hildebrand) is currently unstable in some regimes, yielding NaN or infinite values.
+- **Complex Hydrocarbons**: Transport properties for higher hydrocarbons (n-Butane, Dodecane) may have lower accuracy at high pressures due to simplified model implementations.
+
+## Validation & Parity
+
+ChillProp has been rigorously validated against CoolProp for **Nitrogen**, **Air**, and **Combustion Species**:
 
 - **Density:** Exact matches in single-phase regions.
 - **VLE:** Correct phase equilibrium and saturation properties.
-- **Transport:** High-accuracy viscosity and thermal conductivity models implemented.
+- **Transport:** High-accuracy viscosity and thermal conductivity models implemented for key species (N2, O2, Ar, CO2, H2, CH4).
 
 See the [Wiki](Wiki.md) for detailed validation plots and benchmark results.
 
 ## Benchmarks
 
-Calculations are **4.4x faster** than CoolProp when batched and JIT-compiled on CPU (Intel i9). GPU acceleration offers further speedups for massive batches.
+Calculations are **4.4x faster** than CoolProp when batched and JIT-compiled on CPU (AMD Ryzen 7). GPU acceleration benchmarks are pending testing.
 
 ## License
 

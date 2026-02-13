@@ -124,3 +124,34 @@ def props(params: FluidParameters, rho: jax.Array, T: jax.Array) -> dict:
     s = R * (tau_alpha_tau - (vals['a0'] + vals['ar']))
     
     return {'p': p, 'u': u, 'h': h, 's': s}
+
+def speed_sound(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    # w^2 = (dP/drho)_s
+    # w^2 = R*T/M * (1 + 2*delta*ar_d + delta^2*ar_dd - (1 + delta*ar_d - delta*tau*ar_dt)^2 / (cv/R))
+    
+    tau = params.Tr / T
+    delta = rho / params.rhor
+    
+    # Needs partial derivatives of alphar
+    def ar(t, d): return alphar(params, t, d)
+    
+    # First derivatives
+    ar_d = jax.grad(ar, argnums=1)(tau, delta)
+    ar_t = jax.grad(ar, argnums=0)(tau, delta)
+    
+    # Second derivatives
+    ar_dd = jax.grad(jax.grad(ar, argnums=1), argnums=1)(tau, delta)
+    ar_dt = jax.grad(jax.grad(ar, argnums=1), argnums=0)(tau, delta)
+    
+    # Cv/R
+    # cvmolar returns Joules/mol/K. Divide by R to get dimensionless
+    cv_over_R = cvmolar(params, rho, T) / params.R
+    
+    term1 = 1.0 + 2.0 * delta * ar_d + (delta**2) * ar_dd
+    term2 = (1.0 + delta * ar_d - delta * tau * ar_dt)**2 / cv_over_R
+    
+    w2 = (params.R * T / params.M) * (term1 + term2)
+    # Ensure non-negative (can be negative in unstable regions)
+    w2 = jnp.maximum(w2, 0.0)
+    
+    return jnp.sqrt(w2)
