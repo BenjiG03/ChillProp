@@ -2,6 +2,9 @@
 
 **ChillProp** is a differentiable, GPU-accelerated thermodynamic property library for Python, built on [JAX](https://github.com/google/jax) and designed to be API-compatible with [CoolProp](http://www.coolprop.org/).
 
+> [!WARNING]
+> **UNDER CONSTRUCTION**: This library is currently in active development. Features and APIs may change.
+
 ## Why ChillProp?
 
 | Feature | CoolProp | ChillProp |

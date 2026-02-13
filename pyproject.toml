@@ -1,8 +1,8 @@
 [project]
 name = "chillprop"
-version = "0.1.0"
-description = "A JAX-based mirror of CoolProp"
-authors = [{name = "Antigravity", email = "antigravity@google.com"}]
+version = "0.0.1"
+description = "A JAX-based mirror of CoolProp (Under Construction)"
+authors = [{name = "Benji", email = "benji@example.com"}]
 dependencies = [
     "jax",
     "jaxlib",
@@ -20,3 +20,7 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+
+[tool.setuptools.packages.find]
+include = ["chillprop*"]
+exclude = ["CoolProp*", "validation_plots*", "scripts*", "tests*"]
