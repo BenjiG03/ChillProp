@@ -46,3 +46,30 @@ We compared the execution time for calculating density for **10,000 state points
 | **ChillProp (JAX Vectorized)** | **0.52s** | **4.4x** |
 
 **Conclusion:** ChillProp provides a significant speedup when leveraging JAX's `vmap` and `jit` capabilities, even on CPU.
+
+# Validation Report - Air 🌬️
+
+We validated ChillProp against CoolProp (v6.4.1) for **Air**, a pseudo-pure fluid.
+
+## 1. Thermodynamic Properties
+
+High-precision parity was achieved for Air after implementing the `IdealGasHelmholtzPlanckEinsteinGeneralized` term and enabling JAX `x64` precision.
+
+### Density and Enthalpy
+![Density Parity](docs/assets/Density_parity.png)
+![Enthalpy Parity](docs/assets/Enthalpy_parity.png)
+
+**Result:** Parity within machine precision (~1e-15 relative error) across liquid, vapor, and supercritical regions.
+
+### Entropy
+![Entropy Parity](docs/assets/Entropy_parity.png)
+
+## 2. Transport Properties
+
+### Viscosity and Conductivity
+![Viscosity Parity](docs/assets/Viscosity_parity.png)
+![Conductivity Parity](docs/assets/Conductivity_parity.png)
+
+**Result:**
+- **Viscosity:** Exact match (~1e-15).
+- **Thermal Conductivity:** Excellent agreement (< 0.3%) using the implemented Simplified Olchowy-Sengers (SOS) critical enhancement model.
