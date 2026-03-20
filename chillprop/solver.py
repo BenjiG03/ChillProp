@@ -9,27 +9,43 @@ def find_rho_PT(params: FluidParameters, P_target: jax.Array, T: jax.Array, rho_
     Find density rho for a given Pressure and Temperature using Newton-Raphson.
     f(rho) = P(rho, T) - P_target = 0
     """
+    import equinox as eqx
+    dyn_params, static_params = eqx.partition(params, eqx.is_array)
     
-    def step(rho, _):
-        P = pressure(params, rho, T)
-        # dP/drho at constant T
-        dP_drho = jax.grad(pressure, argnums=1)(params, rho, T)
-        
-        delta_rho = (P - P_target) / dP_drho
-        new_rho = rho - delta_rho
-        
-        # Check convergence? In JAX we usually run fixed iterations or use jax.lax.while_loop.
-        # For a drop-in replacement, robustness is key.
-        error = jnp.abs(new_rho - rho) / rho
-        return new_rho, error
+    @jax.custom_vjp
+    def inner_find_rho(dyn_p, P_t, T_val, r_guess):
+        p = eqx.combine(dyn_p, static_params)
+        def step(rho, _):
+            P = pressure(p, rho, T_val)
+            dP_drho = jax.grad(pressure, argnums=1)(p, rho, T_val)
+            delta_rho = (P - P_t) / dP_drho
+            return rho - delta_rho, None
+            
+        rho_final, _ = jax.lax.scan(step, r_guess, jnp.arange(max_iter))
+        return rho_final
 
-    # Use a fixed-iteration scan for simplicity and JIT-friendliness, 
-    # but we could use while_loop for efficiency if needed.
-    # Note: To enable implicit differentiation later, we might need a custom root finder.
+    def fwd(dyn_p, P_t, T_val, r_guess):
+        rho_final = inner_find_rho(dyn_p, P_t, T_val, r_guess)
+        return rho_final, (dyn_p, rho_final, P_t, T_val)
+
+    def bwd(res, g):
+        dyn_p, rho_final, P_t, T_val = res
+        p = eqx.combine(dyn_p, static_params)
+        
+        dP_drho = jax.grad(pressure, argnums=1)(p, rho_final, T_val)
+        dP_dT = jax.grad(pressure, argnums=2)(p, rho_final, T_val)
+        
+        g_P_target = g / dP_drho
+        g_T = g * (-dP_dT / dP_drho)
+        g_rho_guess = jnp.zeros_like(rho_final)
+        g_dyn = jax.tree_util.tree_map(lambda x: jnp.zeros_like(x) if x is not None else None, dyn_p)
+        
+        return (g_dyn, g_P_target, g_T, g_rho_guess)
+
+    inner_find_rho.defvjp(fwd, bwd)
     
-    rho_final, errors = jax.lax.scan(step, rho_guess, jnp.arange(max_iter))
-    
-    return rho_final
+    return inner_find_rho(dyn_params, P_target, T, rho_guess)
+
 
 from chillprop.phases import rhol_anc, rhov_anc, psat_anc
 
@@ -53,10 +69,11 @@ def solve_rho_PT(params: FluidParameters, P: jax.Array, T: jax.Array) -> jax.Arr
     
     # Subcritical Logic: Compare P to Psat
     # If P > Psat, we are compressed liquid -> Use rho_L_anc
-    # If P < Psat, we are superheated vapor -> Use scaled rho_V_anc for better accuracy near saturation
+    # Superheated vapor -> Use scaled rho_V_anc for better accuracy near saturation
     # rho approx P/Psat * rho_V_anc (assuming Z constant along isotherm)
-    # This transitions to rho_V_anc at dome, and is better than ideal gas if Z != 1.
-    rho_vapor_guess = rho_V_anc * (P / Psat)
+    # Safeguard against Psat being 0 at very low temperatures
+    Psat_safe = jnp.maximum(Psat, 1e-10)
+    rho_vapor_guess = jnp.minimum(rho_V_anc * (P / Psat_safe), params.rhoc)
     
     is_liquid_pressure = P > Psat
     guess_sub = jnp.where(is_liquid_pressure, rho_L_anc, rho_vapor_guess)

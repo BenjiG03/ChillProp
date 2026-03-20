@@ -261,11 +261,10 @@ def thermal_conductivity_critical(params: FluidParameters, rho: jax.Array, T: ja
         Xref = (params.Pc / params.rhoc**2) * rho / dp_drho_ref * (lc.T_ref / T)
         
         num = X - Xref
-        # DBL_EPSILON * 10 ~ 2e-15
-        if num < 2.22e-15:
-            return 0.0
+        # Compute safely by clamping num
+        safe_num = jnp.maximum(num, 2.22e-15)
         
-        zeta = lc.zeta0 * (num / lc.GAMMA)**(lc.nu / lc.gamma)
+        zeta = lc.zeta0 * (safe_num / lc.GAMMA)**(lc.nu / lc.gamma)
         
         cp = core.cpmolar(params, rho, T)
         cv = core.cvmolar(params, rho, T)
@@ -275,11 +274,10 @@ def thermal_conductivity_critical(params: FluidParameters, rho: jax.Array, T: ja
         pi = jnp.pi
         
         omega_tilde = (2.0 / pi) * (((cp - cv) / cp) * jnp.arctan(qd_zeta) + (cv / cp) * qd_zeta)
-        # OMEGA_tilde0 = 2.0 / pi * (1.0 - exp(-1.0 / (1.0 / (qD * zeta) + 1.0 / 3.0 * (zeta * qD) * (zeta * qD) / delta / delta)))
         omega_tilde0 = (2.0 / pi) * (1.0 - jnp.exp(-1.0 / (1.0 / qd_zeta + (1.0/3.0) * qd_zeta**2 / delta**2)))
         
         lambda_crit = (rho * cp * lc.R0 * lc.k * T) / (6.0 * pi * mu * zeta) * (omega_tilde - omega_tilde0)
-        return lambda_crit
+        return jnp.where(num < 2.22e-15, 0.0, lambda_crit)
         
     return 0.0
 

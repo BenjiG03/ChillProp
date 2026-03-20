@@ -12,7 +12,7 @@
 | **Accuracy** | ✅ Reference Standard | ✅ Matches CoolProp |
 | **Differentiability** | ❌ No | ✅ **Auto-Diff (JAX)** |
 | **Acceleration** | ❌ CPU Only | ✅ **GPU/TPU (JIT)** |
-| **Batching** | ❌ Serial Loops | ✅ **Vectorized (vmap)** |
+| **Batching** | ❌ Serial Loops | ✅ **Vectorized (Native Arrays)** |
 
 ChillProp allows you to incorporate accurate thermodynamic properties directly into your machine learning models, optimization loops, and differentiable physics simulations.
 
@@ -33,10 +33,38 @@ ChillProp mimics the CoolProp High-Level API (`PropsSI`, `AbstractState`).
 
 ```python
 import chillprop.highlevel as CH
+import jax.numpy as jnp
 
-# Density of Nitrogen at 300 K, 10 bar
-rho = CH.PropsSI("D", "T", 300, "P", 1e6, "Nitrogen")
+# Scalar evaluation (Density of Air at 300 K, 10 bar)
+rho = CH.PropsSI("D", "T", 300.0, "P", 1e6, "Air")
 print(f"Density: {rho} kg/m3")
+
+# Vectorized evaluation (Zero-overhead batching)
+T_vec = jnp.array([300.0, 310.0, 320.0])
+P_vec = jnp.array([1e6, 1e6, 1.5e6])
+rho_vec = CH.PropsSI("D", "T", T_vec, "P", P_vec, "Air")
+print(f"Vector Density: {rho_vec}")
+```
+
+### Automatic Differentiation (`jax.grad`)
+
+ChillProp is natively differentiable! You can extract arbitrary thermodynamic partial derivatives seamlessly using JAX, resolving mathematical derivatives rather than slow or unstable finite differences:
+
+```python
+import jax
+import chillprop.highlevel as CH
+
+# Target function: Calculate Enthalpy given T and P
+def calc_enthalpy(P):
+    # Returns scalar enthalpy for Nitrogen at 400 K
+    return CH.PropsSI("H", "T", 400.0, "P", P, "Nitrogen")
+
+# Create a compiled derivative function: dh/dP
+dh_dP_func = jax.grad(calc_enthalpy)
+
+# Evaluate the exact derivative at P = 5 MPa
+exact_derivative = dh_dP_func(5e6)
+print(f"dh/dP at 5 MPa: {exact_derivative} J/kg/Pa")
 ```
 
 ### using `AbstractState`

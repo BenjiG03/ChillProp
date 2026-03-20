@@ -38,12 +38,20 @@ def PropsSI(out_key: str, key1: str, val1: float, key2: str, val2: float, fluid:
     k2 = KEY_MAP.get(key2)
     ok = KEY_MAP.get(out_key, out_key)
     
-    # Simple dispatcher for input pairs
-    # (T, P), (P, T), (P, H), (P, S)
+    # Auto batching for arrays
+    is_arr1 = hasattr(val1, "shape") and len(val1.shape) > 0
+    is_arr2 = hasattr(val2, "shape") and len(val2.shape) > 0
     
-    # Note: For JAX-friendliness, we'll want this to be JIT-able.
-    # But PropsSI is often called with strings which JAX doesn't like in JIT.
-    # We can separate the "parsed" logic from the "jitted" logic.
+    if is_arr1 or is_arr2:
+        v1_arr = jnp.asarray(val1)
+        v2_arr = jnp.asarray(val2)
+        v1_arr, v2_arr = jnp.broadcast_arrays(v1_arr, v2_arr)
+        
+        @eqx.filter_jit
+        @jax.vmap
+        def _vmap_wrapper(v1, v2):
+            return _PropsSI_internal(params, out_key, k1, v1, k2, v2)
+        return _vmap_wrapper(v1_arr, v2_arr)
     
     return _PropsSI_internal(params, out_key, k1, val1, k2, val2)
 
@@ -110,37 +118,44 @@ def _PropsSI_internal(params, out_key, k1, v1, k2, v2):
 
     # Determine if we are in two-phase region to weight properties
     # Note: T and rho are now known.
-    rho_l, rho_v = solve_vle(params, T)
+    # Shield temperature to prevent solve_vle from raising NaNs in the inactive branch when T > Tc
+    T_vle = jnp.where(T < params.Tc, T, params.Tc * 0.99)
+    rho_l, rho_v = solve_vle(params, T_vle)
+    
     # Use small epsilon for boundary checks
     is_twophase = (T < params.Tc) & (rho >= rho_v * 0.999) & (rho <= rho_l * 1.001)
     Q_calc = vapor_quality(rho, rho_l, rho_v)
     
     def get_prop(func_molar, mass_mult=1.0):
-        if is_twophase:
-            # For pseudo-pure, we must be careful with P
-            if params.pseudo_pure:
-                # Weighted P, H, S etc. between bubble and dew ancillaries
-                pl = evaluate_ancillary(params.ancillary_pL, T) if params.ancillary_pL else pressure(params, rho_l, T)
-                pv = evaluate_ancillary(params.ancillary_pV, T) if params.ancillary_pV else pressure(params, rho_v, T)
-                val_l = func_molar(params, rho_l, T)
-                val_v = func_molar(params, rho_v, T)
-                # If the function is pressure, we use the weighted P
-                if func_molar == pressure:
-                    val = (1.0 - Q_calc) * pl + Q_calc * pv
-                else:
-                    val = (1.0 - Q_calc) * val_l + Q_calc * val_v
+        # Calculate single-phase value
+        val_single = func_molar(params, rho, T)
+        
+        # Calculate two-phase value
+        if params.pseudo_pure:
+            # Weighted P, H, S etc. between bubble and dew ancillaries
+            pl = evaluate_ancillary(params.ancillary_pL, T) if params.ancillary_pL else pressure(params, rho_l, T)
+            pv = evaluate_ancillary(params.ancillary_pV, T) if params.ancillary_pV else pressure(params, rho_v, T)
+            val_l = func_molar(params, rho_l, T)
+            val_v = func_molar(params, rho_v, T)
+            
+            # If the function is pressure, we use the weighted P
+            # We must use identity comparison or name to avoid issues
+            if getattr(func_molar, '__name__', '') == 'pressure' or func_molar is pressure:
+                val_two = (1.0 - Q_calc) * pl + Q_calc * pv
             else:
-                val_l = func_molar(params, rho_l, T)
-                val_v = func_molar(params, rho_v, T)
-                val = (1.0 - Q) * val_l + Q * val_v
+                val_two = (1.0 - Q_calc) * val_l + Q_calc * val_v
         else:
-            val = func_molar(params, rho, T)
-        return float(val * mass_mult)
+            val_l = func_molar(params, rho_l, T)
+            val_v = func_molar(params, rho_v, T)
+            val_two = (1.0 - Q_calc) * val_l + Q_calc * val_v
+            
+        val = jnp.where(is_twophase, val_two, val_single)
+        return val * mass_mult
 
     # Output selection and mass-to-molar conversion
-    if out_key in ['D', 'Density']: return float(rho * params.M)
-    if out_key in ['Dmolar']: return float(rho)
-    if out_key in ['T', 'Temperature']: return float(T)
+    if out_key in ['D', 'Density']: return rho * params.M
+    if out_key in ['Dmolar']: return rho
+    if out_key in ['T', 'Temperature']: return T
     if out_key in ['P', 'Pressure']: return get_prop(pressure) # P is same for both in VLE
     if out_key in ['H', 'Enthalpy']: return get_prop(enthalpy, 1.0/params.M)
     if out_key in ['Hmolar']: return get_prop(enthalpy)
@@ -149,10 +164,12 @@ def _PropsSI_internal(params, out_key, k1, v1, k2, v2):
     if out_key in ['U', 'InternalEnergy']: return get_prop(internal_energy, 1.0/params.M)
     if out_key in ['Umolar']: return get_prop(internal_energy)
     if out_key == 'Q':
-        return float(Q)
-    if out_key in ['V', 'viscosity']: return float(viscosity(params, rho, T))
-    if out_key in ['L', 'conductivity']: return float(thermal_conductivity(params, rho, T))
-    if out_key in ['A', 'speed_sound']: return float(speed_sound(params, rho, T))
+        return Q
+    if out_key in ['V', 'viscosity']: return viscosity(params, rho, T)
+    if out_key in ['L', 'conductivity']: return thermal_conductivity(params, rho, T)
+    if out_key in ['A', 'speed_sound']: return speed_sound(params, rho, T)
+    if out_key in ['gas_constant', 'R', 'R_u']: return params.R
+    if out_key in ['molar_mass', 'M', 'MolarMass']: return params.M
     
     raise ValueError(f"Output key {out_key} not supported")
 
@@ -185,19 +202,19 @@ class AbstractState:
         else:
             raise NotImplementedError(f"AbstractState.update for pair {input_pair} not implemented")
 
-    def rhomolar(self): return float(self.rho)
-    def rhomass(self): return float(self.rho * self.params.M)
-    def hmolar(self): return float(enthalpy(self.params, self.rho, self.T))
-    def hmass(self): return float(self.hmolar() / self.params.M)
-    def smolar(self): return float(entropy(self.params, self.rho, self.T))
-    def smass(self): return float(self.smolar() / self.params.M)
-    def umolar(self): return float(internal_energy(self.params, self.rho, self.T))
-    def umass(self): return float(self.umolar() / self.params.M)
-    def p(self): return float(pressure(self.params, self.rho, self.T))
-    def T(self): return float(self.T)
+    def rhomolar(self): return self.rho
+    def rhomass(self): return self.rho * self.params.M
+    def hmolar(self): return enthalpy(self.params, self.rho, self.T)
+    def hmass(self): return self.hmolar() / self.params.M
+    def smolar(self): return entropy(self.params, self.rho, self.T)
+    def smass(self): return self.smolar() / self.params.M
+    def umolar(self): return internal_energy(self.params, self.rho, self.T)
+    def umass(self): return self.umolar() / self.params.M
+    def p(self): return pressure(self.params, self.rho, self.T)
+    def T(self): return self.T
     def Q(self):
         rho_l, rho_v = solve_vle(self.params, self.T)
-        return float(vapor_quality(self.rho, rho_l, rho_v))
+        return vapor_quality(self.rho, rho_l, rho_v)
     
     def keyed_output(self, key: int):
         import CoolProp.CoolProp as CP

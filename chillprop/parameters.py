@@ -206,6 +206,7 @@ class FluidParameters(eqx.Module):
     def from_json(cls, data: dict):
         # Handle list vs dict
         fluid = data[0] if isinstance(data, list) else data
+
         
         # Access the first EOS formulation
         if 'EOS' not in fluid or not fluid['EOS']:
@@ -460,6 +461,8 @@ class FluidParameters(eqx.Module):
         if rtype in ['polynomial', 'polynomial_and_exponential']:
             val_A = res_data.get('A')
             val_B = res_data.get('B')
+            
+            # Use B if present, otherwise A
             coeffs = val_B if val_B is not None else val_A
             if coeffs is None: coeffs = []
             
