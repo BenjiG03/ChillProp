@@ -12,7 +12,6 @@
 | **Accuracy** | ✅ Reference Standard | ✅ Matches CoolProp |
 | **Differentiability** | ❌ No | ✅ **Auto-Diff (JAX)** |
 | **Acceleration** | ❌ CPU Only | ✅ **GPU/TPU (JIT)** |
-| **Batching** | ❌ Serial Loops | ✅ **Vectorized (Native Arrays)** |
 
 ChillProp allows you to incorporate accurate thermodynamic properties directly into your machine learning models, optimization loops, and differentiable physics simulations.
 
@@ -28,6 +27,7 @@ pip install -e .
 ## Quick Start
 
 ChillProp mimics the CoolProp High-Level API (`PropsSI`, `AbstractState`).
+Validation has mostly focused on dry air so far, so use other species at your own risk.
 
 ### using `PropsSI`
 
