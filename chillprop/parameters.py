@@ -67,6 +67,17 @@ class ResidualHelmholtzGaussian(ResidualHelmholtzTerm):
     beta: jnp.ndarray
     gamma: jnp.ndarray
 
+class ResidualHelmholtzNonAnalytic(ResidualHelmholtzTerm):
+    # Matches CoolProp ResidualHelmholtzNonAnalyticElement parameters
+    n: jax.Array
+    a: jax.Array
+    b: jax.Array
+    beta: jax.Array
+    A: jax.Array
+    B: jax.Array
+    C: jax.Array
+    D: jax.Array
+
 class AncillaryEquation(eqx.Module):
     n: jnp.ndarray
     t: jnp.ndarray
@@ -287,6 +298,17 @@ class FluidParameters(eqx.Module):
                     jnp.array(term['epsilon']),
                     jnp.array(term['beta']),
                     jnp.array(term['gamma'])
+                ))
+            elif t_type == 'ResidualHelmholtzNonAnalytic':
+                alphar.append(ResidualHelmholtzNonAnalytic(
+                    n=jnp.array(term['n']),
+                    a=jnp.array(term['a']),
+                    b=jnp.array(term['b']),
+                    beta=jnp.array(term['beta']),
+                    A=jnp.array(term['A']),
+                    B=jnp.array(term['B']),
+                    C=jnp.array(term['C']),
+                    D=jnp.array(term['D']),
                 ))
         
         # Critical and Reducing points

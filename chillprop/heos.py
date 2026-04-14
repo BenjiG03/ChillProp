@@ -13,7 +13,8 @@ from chillprop.parameters import (
     IdealHelmholtzCP0Constant,
     IdealHelmholtzCP0PolyT,
     ResidualHelmholtzPower,
-    ResidualHelmholtzGaussian
+    ResidualHelmholtzGaussian,
+    ResidualHelmholtzNonAnalytic,
 )
 
 def alpha0_lead(term: IdealHelmholtzLead, tau: jax.Array, delta: jax.Array) -> jax.Array:
@@ -168,6 +169,34 @@ def alphar_gaussian(term: ResidualHelmholtzGaussian, tau: jax.Array, delta: jax.
     )
     return jnp.sum(val)
 
+def alphar_nonanalytic(term: ResidualHelmholtzNonAnalytic, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """
+    Non-analytic residual Helmholtz term matching CoolProp's ResidualHelmholtzNonAnalytic.
+
+    Value (see CoolProp src/Helmholtz.cpp):
+      theta = (1 - tau) + A * |delta - 1|^(1/beta)
+      PSI   = exp(-C*(delta-1)^2 - D*(tau-1)^2)
+      DELTA = theta^2 + B * |delta - 1|^(2a)
+      alphar += delta * n * DELTA^b * PSI
+    """
+    tau = jnp.asarray(tau)
+    delta = jnp.asarray(delta)
+
+    # CoolProp offsets tau/delta extremely close to 1 to avoid undefined intermediates
+    eps = 10.0 * jnp.finfo(tau.dtype).eps
+    tau_s = jnp.where(jnp.abs(tau - 1.0) < eps, tau + eps, tau)
+    delta_s = jnp.where(jnp.abs(delta - 1.0) < eps, delta + eps, delta)
+
+    dm1 = delta_s - 1.0
+    tm1 = tau_s - 1.0
+
+    # |delta-1|^(1/beta) is computed as ( (delta-1)^2 )^(1/(2*beta)) to match CoolProp
+    dm1_sq = dm1 * dm1
+    theta = (1.0 - tau_s) + term.A * (dm1_sq ** (1.0 / (2.0 * term.beta)))
+    PSI = jnp.exp(-term.C * dm1_sq - term.D * (tm1 * tm1))
+    DELTA = (theta * theta) + term.B * (dm1_sq ** term.a)
+    return jnp.sum(delta_s * term.n * (DELTA ** term.b) * PSI)
+
 def alpha0(params: FluidParameters, tau: jax.Array, delta: jax.Array) -> jax.Array:
     tau = jnp.asarray(tau)
     delta = jnp.asarray(delta)
@@ -204,6 +233,8 @@ def alphar(params: FluidParameters, tau: jax.Array, delta: jax.Array) -> jax.Arr
             val += alphar_power(term, tau, delta)
         elif isinstance(term, ResidualHelmholtzGaussian):
             val += alphar_gaussian(term, tau, delta)
+        elif isinstance(term, ResidualHelmholtzNonAnalytic):
+            val += alphar_nonanalytic(term, tau, delta)
     return val
 
 def evaluate_alpha0(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
