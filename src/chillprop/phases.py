@@ -24,14 +24,17 @@ def evaluate_ancillary(anc: AncillaryEquation, T: jax.Array) -> jax.Array:
     return val
 
 def rhol_anc(params: FluidParameters, T: jax.Array) -> jax.Array:
+    """Return ancillary saturated-liquid density."""
     if params.ancillary_rhoL is None: return jnp.nan
     return evaluate_ancillary(params.ancillary_rhoL, T)
 
 def rhov_anc(params: FluidParameters, T: jax.Array) -> jax.Array:
+    """Return ancillary saturated-vapor density."""
     if params.ancillary_rhoV is None: return jnp.nan
     return evaluate_ancillary(params.ancillary_rhoV, T)
 
 def psat_anc(params: FluidParameters, T: jax.Array) -> jax.Array:
+    """Return ancillary saturation pressure."""
     if params.ancillary_pS is not None:
         return evaluate_ancillary(params.ancillary_pS, T)
     if params.ancillary_pL is not None:
@@ -42,7 +45,7 @@ def psat_anc(params: FluidParameters, T: jax.Array) -> jax.Array:
     return jnp.nan
 
 def chemical_potential(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
-    """Molar chemical potential mu = A + PV = RT(alpha + 1 + delta*alphar_delta)"""
+    """Return molar chemical potential."""
     tau = params.Tc / T
     delta = rho / params.rhoc
     
@@ -93,7 +96,7 @@ def solve_vle(params: FluidParameters, T: jax.Array, max_iter: int = 20) -> jax.
     return x_final
 
 def vapor_quality(rho: jax.Array, rho_l: jax.Array, rho_v: jax.Array) -> jax.Array:
-    """Calculate vapor quality q."""
+    """Calculate vapor quality from bulk and saturation densities."""
     v = 1.0 / rho
     vl = 1.0 / rho_l
     vv = 1.0 / rho_v
@@ -101,7 +104,7 @@ def vapor_quality(rho: jax.Array, rho_l: jax.Array, rho_v: jax.Array) -> jax.Arr
 
 @eqx.filter_jit
 def get_phase(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
-    """Determine phase."""
+    """Classify the phase as liquid, vapor, two-phase, or supercritical."""
     Tc = params.Tc
     is_supercritical = T > Tc
     

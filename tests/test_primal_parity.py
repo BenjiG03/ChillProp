@@ -4,17 +4,15 @@ import jax.numpy as jnp
 import jax
 import equinox as eqx
 import CoolProp.CoolProp as CP
-from chillprop.parameters import FluidParameters
+from chillprop.highlevel import get_params
 from chillprop.core import pressure, enthalpy, entropy
-from scripts.extract_params import extract_fluid_params
 
 # Enable double precision
 jax.config.update("jax_enable_x64", True)
 
 @pytest.fixture(scope="module")
 def nitrogen_params():
-    data = extract_fluid_params('Nitrogen')
-    return FluidParameters.from_json(data)
+    return get_params("Nitrogen")
 
 def test_primal_parity_grid(nitrogen_params):
     fluid = 'Nitrogen'
@@ -151,9 +149,6 @@ def test_primal_parity_grid(nitrogen_params):
     assert not failures, "\n".join(failures[:20]) # Limit output
 
 if __name__ == "__main__":
-    from chillprop.parameters import FluidParameters
-    from scripts.extract_params import extract_fluid_params
-    data = extract_fluid_params('Nitrogen')
-    params = FluidParameters.from_json(data)
+    params = get_params("Nitrogen")
     test_primal_parity_grid(params)
     print("Test passed manually!")

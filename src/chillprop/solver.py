@@ -14,6 +14,7 @@ def find_rho_PT(params: FluidParameters, P_target: jax.Array, T: jax.Array, rho_
     
     @jax.custom_vjp
     def inner_find_rho(dyn_p, P_t, T_val, r_guess):
+        """Solve the Newton iteration with a custom backward pass."""
         p = eqx.combine(dyn_p, static_params)
         def step(rho, _):
             P = pressure(p, rho, T_val)
@@ -121,7 +122,7 @@ from chillprop.core import enthalpy, entropy
 
 @eqx.filter_jit
 def solve_rhoT_Ph(params: FluidParameters, P: jax.Array, h: jax.Array) -> jax.Array:
-    """Solve for (rho, T) given (P, h)"""
+    """Solve for `(rho, T)` given pressure and molar enthalpy."""
     # Guess: T approx 300, rho approx P/RT
     T_guess = 300.0
     rho_guess = P / (params.R * T_guess)
@@ -133,7 +134,7 @@ def solve_rhoT_Ph(params: FluidParameters, P: jax.Array, h: jax.Array) -> jax.Ar
 
 @eqx.filter_jit
 def solve_rhoT_Ps(params: FluidParameters, P: jax.Array, s: jax.Array) -> jax.Array:
-    """Solve for (rho, T) given (P, s)"""
+    """Solve for `(rho, T)` given pressure and molar entropy."""
     T_guess = 350.0
     rho_guess = P / (params.R * T_guess)
     

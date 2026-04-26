@@ -4,61 +4,74 @@ import jax.numpy as jnp
 from typing import List, Union, Optional
 
 class IdealHelmholtzTerm(eqx.Module):
+    """Base type for ideal-gas Helmholtz contributions."""
     pass
 
 class IdealHelmholtzLead(IdealHelmholtzTerm):
+    """Ideal Helmholtz lead term coefficients."""
     a1: float
     a2: float
 
 class IdealHelmholtzLogTau(IdealHelmholtzTerm):
+    """Ideal Helmholtz logarithmic-in-tau coefficient."""
     a: float
 
 class IdealHelmholtzEnthalpyEntropyOffset(IdealHelmholtzTerm):
+    """Reference-state offset term."""
     a1: float
     a2: float
     reference: str
 
 class IdealHelmholtzPower(IdealHelmholtzTerm):
+    """Polynomial ideal-gas Helmholtz term."""
     n: jnp.ndarray
     t: jnp.ndarray
 
 class IdealHelmholtzPlanckEinstein(IdealHelmholtzTerm):
+    """Planck-Einstein ideal-gas term."""
     n: jnp.ndarray
     t: jnp.ndarray
 
 class IdealHelmholtzPlanckEinsteinFunctionT(IdealHelmholtzTerm):
+    """Planck-Einstein term parameterized by absolute characteristic temperatures."""
     n: jnp.ndarray
     v: jnp.ndarray
     Tcrit: float
 
 class IdealHelmholtzPlanckEinsteinGeneralized(IdealHelmholtzTerm):
+    """Generalized Planck-Einstein ideal-gas term."""
     n: jax.Array
     t: jax.Array
     c: jax.Array
     d: jax.Array
 
 class IdealHelmholtzCP0Constant(IdealHelmholtzTerm):
+    """Constant ideal-gas heat-capacity contribution."""
     cp_over_R: float
     T0: float
     Tc: float
     t: jnp.ndarray
 
 class IdealHelmholtzCP0PolyT(IdealHelmholtzTerm):
+    """Polynomial ideal-gas heat-capacity contribution."""
     c: jnp.ndarray
     t: jnp.ndarray
     T0: float
     Tc: float
 
 class ResidualHelmholtzTerm(eqx.Module):
+    """Base type for residual Helmholtz contributions."""
     pass
 
 class ResidualHelmholtzPower(ResidualHelmholtzTerm):
+    """Residual power or exponential term."""
     n: jnp.ndarray
     d: jnp.ndarray
     t: jnp.ndarray
     l: jnp.ndarray
 
 class ResidualHelmholtzGaussian(ResidualHelmholtzTerm):
+    """Residual Gaussian term."""
     n: jnp.ndarray
     d: jnp.ndarray
     t: jnp.ndarray
@@ -68,7 +81,7 @@ class ResidualHelmholtzGaussian(ResidualHelmholtzTerm):
     gamma: jnp.ndarray
 
 class ResidualHelmholtzNonAnalytic(ResidualHelmholtzTerm):
-    # Matches CoolProp ResidualHelmholtzNonAnalyticElement parameters
+    """Residual non-analytic critical-region term."""
     n: jax.Array
     a: jax.Array
     b: jax.Array
@@ -79,6 +92,7 @@ class ResidualHelmholtzNonAnalytic(ResidualHelmholtzTerm):
     D: jax.Array
 
 class AncillaryEquation(eqx.Module):
+    """CoolProp-style ancillary correlation coefficients."""
     n: jnp.ndarray
     t: jnp.ndarray
     reducing_value: float
@@ -86,16 +100,18 @@ class AncillaryEquation(eqx.Module):
     type: str
     using_tau_r: bool = False
 class ViscosityRainwaterFriend(eqx.Module):
+    """Rainwater-Friend initial-density viscosity model."""
     b: jax.Array
     t: jax.Array
 
 class ViscosityPowersOfTr(eqx.Module):
+    """Dilute viscosity model expressed as powers of reduced temperature."""
     a: jax.Array
     t: jax.Array
     T_reducing: float
 
 class ViscosityFrictionTheory(eqx.Module):
-    # Coefficients for friction theory
+    """Friction-theory higher-order viscosity model."""
     Aa: jax.Array
     Aaa: jax.Array
     Ai: jax.Array
@@ -120,12 +136,14 @@ class ViscosityFrictionTheory(eqx.Module):
     Adrdr: Optional[jax.Array] = None
 
 class ViscosityDiluteCollisionIntegral(eqx.Module):
+    """Collision-integral dilute viscosity model."""
     a: jax.Array
     t: jax.Array
     molar_mass: float
     C: float
 
 class ViscosityInitialDensityEmpirical(eqx.Module):
+    """Empirical initial-density viscosity correction."""
     n: jax.Array
     d: jax.Array
     t: jax.Array
@@ -133,6 +151,7 @@ class ViscosityInitialDensityEmpirical(eqx.Module):
     rhomolar_reducing: float
 
 class ViscosityModifiedBatschinskiHildebrand(eqx.Module):
+    """Modified Batschinski-Hildebrand higher-order viscosity model."""
     a: jax.Array
     d1: jax.Array
     t1: jax.Array
@@ -149,6 +168,7 @@ class ViscosityModifiedBatschinskiHildebrand(eqx.Module):
     rhomolar_reduce: float
 
 class ViscosityParameters(eqx.Module):
+    """Container for viscosity submodels and shared constants."""
     dilute: Union[ViscosityPowersOfTr, ViscosityDiluteCollisionIntegral, dict]
     initial_density: Optional[Union[ViscosityRainwaterFriend, ViscosityInitialDensityEmpirical]]
     higher_order: Optional[Union[ViscosityFrictionTheory, ViscosityModifiedBatschinskiHildebrand, dict]]
@@ -156,6 +176,7 @@ class ViscosityParameters(eqx.Module):
     sigma_eta: float
 
 class ConductivityRatioOfPolynomials(eqx.Module):
+    """Dilute conductivity model as a ratio of polynomials."""
     A: jax.Array
     B: jax.Array
     n: jax.Array
@@ -163,10 +184,12 @@ class ConductivityRatioOfPolynomials(eqx.Module):
     T_reducing: float
 
 class ConductivityDiluteEta0AndPoly(eqx.Module):
+    """Dilute conductivity model built from dilute viscosity and a polynomial."""
     A: jax.Array
     t: jax.Array
 
 class ConductivityResidualPolynomialAndExponential(eqx.Module):
+    """Residual conductivity model using polynomial and exponential terms."""
     A: jax.Array
     d: jax.Array
     t: jax.Array
@@ -176,6 +199,7 @@ class ConductivityResidualPolynomialAndExponential(eqx.Module):
     rhomolar_reducing: float
 
 class ConductivitySimplifiedOlchowySengers(eqx.Module):
+    """Simplified Olchowy-Sengers critical enhancement model."""
     k: float
     R0: float
     nu: float
@@ -186,14 +210,17 @@ class ConductivitySimplifiedOlchowySengers(eqx.Module):
     T_ref: float
 
 class ConductivityDiluteCO2HuberJPCRD2016(eqx.Module):
+    """Marker for the specialized CO2 dilute conductivity correlation."""
     pass
 
 class ConductivityParameters(eqx.Module):
+    """Container for conductivity submodels."""
     dilute: Union[ConductivityRatioOfPolynomials, ConductivityDiluteEta0AndPoly, dict]
     residual: Optional[Union[ConductivityResidualPolynomialAndExponential, dict]]
     critical: Optional[Union[ConductivitySimplifiedOlchowySengers, dict]]
 
 class FluidParameters(eqx.Module):
+    """Parsed thermodynamic, ancillary, and transport parameters for one fluid."""
     name: str
     aliases: List[str]
     Tc: float
@@ -223,6 +250,7 @@ class FluidParameters(eqx.Module):
 
     @classmethod
     def from_json(cls, data: dict):
+        """Build a `FluidParameters` instance from bundled CoolProp-style JSON."""
         # Handle list vs dict
         fluid = data[0] if isinstance(data, list) else data
 
@@ -373,6 +401,7 @@ class FluidParameters(eqx.Module):
 
     @staticmethod
     def _parse_viscosity(data):
+        """Parse CoolProp viscosity metadata into typed transport models."""
         if not data: return None
         # Handle list of viscosity models (pick first)
         if isinstance(data, list):
@@ -465,6 +494,7 @@ class FluidParameters(eqx.Module):
 
     @staticmethod
     def _parse_conductivity(data, Tc: float):
+        """Parse CoolProp conductivity metadata into typed transport models."""
         if not data: return None
         # Handle list of conductivity models (pick first)
         if isinstance(data, list):

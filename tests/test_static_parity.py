@@ -1,7 +1,9 @@
 import pytest
+import json
 import numpy as np
 import jax.numpy as jnp
 import jax
+from importlib import resources
 from chillprop.parameters import (
     FluidParameters,
     IdealHelmholtzLead,
@@ -18,9 +20,8 @@ jax.config.update("jax_enable_x64", True)
 
 def test_nitrogen_static_parity():
     fluid_name = 'Nitrogen'
-    from scripts.extract_params import extract_fluid_params
-    data = extract_fluid_params(fluid_name)
-    assert data is not None, "Failed to extract parameters from CoolProp"
+    with resources.files("chillprop").joinpath("data", f"{fluid_name}.json").open("r", encoding="utf-8") as handle:
+        data = json.load(handle)
     
     # Parse into JAX structure
     params = FluidParameters.from_json(data)

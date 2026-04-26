@@ -143,13 +143,14 @@ def viscosity_higher_order(params: FluidParameters, rho: jax.Array, T: jax.Array
     return 0.0
 
 def viscosity(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
-    """Viscosity [Pa-s]"""
+    """Return total dynamic viscosity."""
     eta0 = viscosity_dilute(params, T)
     eta_initial = viscosity_initial_density(params, rho, T)
     eta_ho = viscosity_higher_order(params, rho, T)
     return eta0 + eta_initial + eta_ho
 
 def _calc_cv0_r(params: FluidParameters, T: jax.Array) -> jax.Array:
+    """Return ideal-gas heat capacity divided by `R`."""
     # Calculate Ideal Gas Heat Capacity / R
     from chillprop import heos
     tau = params.Tr / T
@@ -237,6 +238,7 @@ def thermal_conductivity_residual(params: FluidParameters, rho: jax.Array, T: ja
     return 0.0
 
 def _dp_drho_T_delta(params: FluidParameters, T: jax.Array, delta: jax.Array) -> jax.Array:
+    """Return `dP/drho` expressed in terms of reduced density."""
     from chillprop.heos import alphar
     tau = params.Tc / T
     def ar_delta(d):
@@ -282,7 +284,7 @@ def thermal_conductivity_critical(params: FluidParameters, rho: jax.Array, T: ja
     return 0.0
 
 def thermal_conductivity(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
-    """Thermal Conductivity [W/m/K]"""
+    """Return total thermal conductivity."""
     l0 = thermal_conductivity_dilute(params, T)
     lr = thermal_conductivity_residual(params, rho, T)
     lc = thermal_conductivity_critical(params, rho, T)

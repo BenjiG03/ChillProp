@@ -4,6 +4,7 @@ from chillprop.parameters import FluidParameters
 from chillprop.heos import alpha0, alphar
 
 def get_alpha_and_derivs(params: FluidParameters, rho: jax.Array, T: jax.Array):
+    """Evaluate Helmholtz energies and first derivatives for a state."""
     tau = params.Tr / T
     delta = rho / params.rhor
     
@@ -31,6 +32,7 @@ def get_alpha_and_derivs(params: FluidParameters, rho: jax.Array, T: jax.Array):
     }
 
 def pressure(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    """Return pressure from the residual Helmholtz derivative."""
     # Pressure comes from the Helmholtz derivative: P = rho * R * T * (1 + delta * dar_ddelta)
     # (alpha0 contributes only to the ideal-gas component).
     
@@ -43,6 +45,7 @@ def pressure(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array
     return rho * params.R * T * (1.0 + delta * dar_ddelta)
 
 def enthalpy(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    """Return molar enthalpy."""
     # h = R T (1 + tau(da0_dtau + dar_dtau) + delta * dar_ddelta)
     vals = get_alpha_and_derivs(params, rho, T)
     tau = vals['tau']
@@ -50,18 +53,21 @@ def enthalpy(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array
     return params.R * T * (1.0 + tau * (vals['da0_dtau'] + vals['dar_dtau']) + delta * vals['dar_ddelta'])
 
 def entropy(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    """Return molar entropy."""
     # s = R (tau(da0_dtau + dar_dtau) - (a0 + ar))
     vals = get_alpha_and_derivs(params, rho, T)
     tau = vals['tau']
     return params.R * (tau * (vals['da0_dtau'] + vals['dar_dtau']) - (vals['a0'] + vals['ar']))
 
 def internal_energy(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    """Return molar internal energy."""
     # u = R T * tau * (da0_dtau + dar_dtau)
     vals = get_alpha_and_derivs(params, rho, T)
     tau = vals['tau']
     return params.R * T * tau * (vals['da0_dtau'] + vals['dar_dtau'])
 
 def cvmolar(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    """Return molar constant-volume heat capacity."""
     tau = params.Tr / T
     delta = rho / params.rhor
     
@@ -74,6 +80,7 @@ def cvmolar(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
     return -params.R * (tau**2) * d2
 
 def cpmolar(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    """Return molar constant-pressure heat capacity."""
     tau = params.Tr / T
     delta = rho / params.rhor
     
@@ -95,6 +102,7 @@ def cpmolar(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
     return cv + params.R * num / den
 
 def props(params: FluidParameters, rho: jax.Array, T: jax.Array) -> dict:
+    """Return a small bundle of core molar thermodynamic properties."""
     vals = get_alpha_and_derivs(params, rho, T)
     tau = vals['tau']
     delta = vals['delta']
@@ -113,6 +121,7 @@ def props(params: FluidParameters, rho: jax.Array, T: jax.Array) -> dict:
     return {'p': p, 'u': u, 'h': h, 's': s}
 
 def speed_sound(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    """Return the thermodynamic speed of sound."""
     # w^2 = (dP/drho)_s
     # w^2 = R*T/M * (1 + 2*delta*ar_d + delta^2*ar_dd - (1 + delta*ar_d - delta*tau*ar_dt)^2 / (cv/R))
     

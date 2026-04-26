@@ -3,16 +3,14 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import CoolProp.CoolProp as CP
-from chillprop.parameters import FluidParameters
+from chillprop.highlevel import get_params
 from chillprop.solver import solve_rho_PT, solve_rhoT_Ph, solve_rhoT_Ps
-from scripts.extract_params import extract_fluid_params
 
 jax.config.update("jax_enable_x64", True)
 
 @pytest.fixture(scope="module")
 def params():
-    data = extract_fluid_params('Nitrogen')
-    return FluidParameters.from_json(data)
+    return get_params("Nitrogen")
 
 def test_rho_PT_solver(params):
     T_target = 300.0

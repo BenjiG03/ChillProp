@@ -3,16 +3,14 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import CoolProp.CoolProp as CP
-from chillprop.parameters import FluidParameters
+from chillprop.highlevel import get_params
 from chillprop.phases import psat_anc, rhol_anc, rhov_anc
-from scripts.extract_params import extract_fluid_params
 
 jax.config.update("jax_enable_x64", True)
 
 @pytest.fixture(scope="module")
 def params():
-    data = extract_fluid_params('Nitrogen')
-    return FluidParameters.from_json(data)
+    return get_params("Nitrogen")
 
 def test_ancillary_parity(params):
     # Test at several subcritical temperatures

@@ -18,33 +18,40 @@ from chillprop.parameters import (
 )
 
 def alpha0_lead(term: IdealHelmholtzLead, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate the ideal-gas lead term."""
     # Lead term: a1 + a2 * tau, providing reference enthalpy/entropy offsets.
     return term.a1 + term.a2 * tau
 
 def alpha0_enthalpy_entropy_offset(term: IdealHelmholtzEnthalpyEntropyOffset, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate a reference enthalpy/entropy offset term."""
     # Enthalpy/entropy offset term: a1 + a2 * tau (same form as the lead term).
     return term.a1 + term.a2 * tau
 
 def alpha0_logtau(term: IdealHelmholtzLogTau, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate an ideal-gas logarithmic term."""
     # a * log(tau)
     return term.a * jnp.log(tau)
 
 def alpha0_power(term: IdealHelmholtzPower, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate an ideal-gas polynomial term."""
     # sum(n_i * tau^t_i)
     return jnp.sum(term.n * (tau ** term.t))
 
 def alpha0_planck_einstein(term: IdealHelmholtzPlanckEinstein, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate a Planck-Einstein ideal-gas term."""
     # Planck-Einstein term: sum(n_i * log(1 - exp(-t_i * tau))) where t_i stores theta_i / Tc.
     vals = term.n * jnp.log(1 - jnp.exp(-term.t * tau))
     return jnp.sum(vals)
 
 def alpha0_planck_einstein_function_t(term: IdealHelmholtzPlanckEinsteinFunctionT, tau: jax.Array, delta: jax.Array, Tr: float) -> jax.Array:
+    """Evaluate a Planck-Einstein term stored in absolute-temperature form."""
     # Parameterization uses absolute theta (term.v), so theta/T = term.v * tau / Tr.
     theta = term.v
     val = term.n * jnp.log(1 - jnp.exp(-theta * tau / Tr))
     return jnp.sum(val)
 
 def alpha0_planck_einstein_generalized(term: IdealHelmholtzPlanckEinsteinGeneralized, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate a generalized Planck-Einstein ideal-gas term."""
     # sum(n_i * log(c_i + d_i * exp(t_i * tau)))
     # Note: t_i here corresponds to 'theta' in typical notation
     # but in our parameter class it is 't'.
@@ -52,6 +59,7 @@ def alpha0_planck_einstein_generalized(term: IdealHelmholtzPlanckEinsteinGeneral
     return jnp.sum(val)
 
 def alpha0_cp0_constant(term: IdealHelmholtzCP0Constant, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate a constant ideal-gas heat-capacity contribution."""
     # alpha0 = c - c*T0/Tc*tau - c*ln(Tc/T0) + c*ln(tau)
     c = term.cp_over_R
     T0 = term.T0
@@ -60,6 +68,7 @@ def alpha0_cp0_constant(term: IdealHelmholtzCP0Constant, tau: jax.Array, delta: 
     return val
 
 def alpha0_cp0_polyt(term: IdealHelmholtzCP0PolyT, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate a polynomial ideal-gas heat-capacity contribution."""
     # Int(Cp0/R) contributions
     # For each term c*T^t:
     # alpha0_i = c * [ (T^t - T0^(t+1)/T)/(t+1) - (T^t - T0^t)/t ]
@@ -108,6 +117,7 @@ def alpha0_cp0_polyt(term: IdealHelmholtzCP0PolyT, tau: jax.Array, delta: jax.Ar
     return val
 
 def alphar_power(term: ResidualHelmholtzPower, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate a residual power or exponential term."""
     # n * delta^d * tau^t * exp(-delta^l)
     # If l=0, it is a polynomial term: n * delta^d * tau^t (exp factor is 1)
     # If l>0, it is an exponential term.
@@ -122,6 +132,7 @@ def alphar_power(term: ResidualHelmholtzPower, tau: jax.Array, delta: jax.Array)
     return jnp.sum(val)
 
 def alphar_gaussian(term: ResidualHelmholtzGaussian, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate a residual Gaussian term."""
     # n * delta^d * tau^t * exp(-eta*(delta-epsilon)^2 - beta*(tau-gamma)^2)
     val = term.n * (delta ** term.d) * (tau ** term.t) * jnp.exp(
         -term.eta * ((delta - term.epsilon)**2) - term.beta * ((tau - term.gamma)**2)
@@ -157,6 +168,7 @@ def alphar_nonanalytic(term: ResidualHelmholtzNonAnalytic, tau: jax.Array, delta
     return jnp.sum(delta_s * term.n * (DELTA ** term.b) * PSI)
 
 def alpha0(params: FluidParameters, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate the total ideal-gas Helmholtz energy."""
     tau = jnp.asarray(tau)
     delta = jnp.asarray(delta)
     val = jnp.log(delta) 
@@ -184,6 +196,7 @@ def alpha0(params: FluidParameters, tau: jax.Array, delta: jax.Array) -> jax.Arr
     return val
 
 def alphar(params: FluidParameters, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate the total residual Helmholtz energy."""
     tau = jnp.asarray(tau)
     delta = jnp.asarray(delta)
     val = jnp.array(0.0, dtype=tau.dtype)
@@ -197,11 +210,13 @@ def alphar(params: FluidParameters, tau: jax.Array, delta: jax.Array) -> jax.Arr
     return val
 
 def evaluate_alpha0(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    """Evaluate total ideal-gas Helmholtz energy in `(rho, T)` coordinates."""
     tau = params.Tr / T
     delta = rho / params.rhor
     return alpha0(params, tau, delta)
 
 def evaluate_alphar(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
+    """Evaluate total residual Helmholtz energy in `(rho, T)` coordinates."""
     tau = params.Tr / T
     delta = rho / params.rhor
     return alphar(params, tau, delta)

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import re
+from importlib import resources
 from typing import Any
 
 import equinox as eqx
@@ -13,11 +15,11 @@ from chillprop.parameters import FluidParameters
 from chillprop.phases import evaluate_ancillary, get_phase, solve_vle, vapor_quality
 from chillprop.solver import solve_rho_PT, solve_rhoT_Ph, solve_rhoT_Ps
 from chillprop.transport import thermal_conductivity, viscosity
-from scripts.extract_params import extract_fluid_params
 
 
 _FLUID_CACHE: dict[str, FluidParameters] = {}
 _ALIAS_CACHE: dict[str, str] = {}
+_FLUID_DATA_CACHE: dict[str, dict[str, Any]] = {}
 
 # Minimal CoolProp-compatible parameter and input-pair constants used by this repo.
 iT = 19
@@ -178,6 +180,7 @@ _INPUT_ALIASES = {
 
 
 def _normalize_fluid_name(fluid: str) -> str:
+    """Resolve a user fluid string to the canonical bundled fluid name."""
     backend, fluid_name = _split_backend(fluid)
     if backend not in _SUPPORTED_BACKENDS:
         raise NotImplementedError(f"Backend '{backend}' is not implemented in pure-JAX ChillProp")
@@ -190,15 +193,45 @@ def _normalize_fluid_name(fluid: str) -> str:
 
 
 def _split_backend(fluid: str) -> tuple[str, str]:
+    """Split a `BACKEND::Fluid` identifier into backend and fluid name."""
     if "::" in fluid:
         return tuple(fluid.split("::", 1))  # type: ignore[return-value]
     return "", fluid
 
 
+def _load_fluid_data(fluid: str) -> dict[str, Any]:
+    """Load a bundled fluid JSON payload by canonical name or alias."""
+    key = fluid.lower()
+    if key in _FLUID_DATA_CACHE:
+        return _FLUID_DATA_CACHE[key]
+
+    data_dir = resources.files("chillprop").joinpath("data")
+    for candidate in data_dir.iterdir():
+        if candidate.suffix.lower() != ".json":
+            continue
+        with candidate.open("r", encoding="utf-8") as handle:
+            data = json.load(handle)
+        fluid_data = data[0] if isinstance(data, list) else data
+        info = fluid_data.get("INFO", {})
+        names = {candidate.stem.lower(), str(info.get("NAME", "")).lower()}
+        names.update(alias.lower() for alias in info.get("ALIASES", []))
+        if key not in names:
+            continue
+        canonical = str(info.get("NAME", candidate.stem))
+        _FLUID_DATA_CACHE[key] = fluid_data
+        _FLUID_DATA_CACHE[canonical.lower()] = fluid_data
+        for alias in info.get("ALIASES", []):
+            _FLUID_DATA_CACHE[alias.lower()] = fluid_data
+        return fluid_data
+
+    raise FileNotFoundError(f"No bundled fluid data found for '{fluid}'")
+
+
 def get_params(fluid: str) -> FluidParameters:
+    """Return parsed fluid parameters, caching canonical fluid definitions."""
     canonical = _normalize_fluid_name(fluid)
     if canonical not in _FLUID_CACHE:
-        data = extract_fluid_params(canonical)
+        data = _load_fluid_data(canonical)
         params = FluidParameters.from_json(data)
         _FLUID_CACHE[canonical] = params
         for alias in [params.name, *params.aliases]:
@@ -207,6 +240,7 @@ def get_params(fluid: str) -> FluidParameters:
 
 
 def _is_array_like(value: Any) -> bool:
+    """Return whether a value should be treated as a vectorized PropsSI input."""
     if isinstance(value, (list, tuple)):
         return True
     if isinstance(value, (jax.Array, jnp.ndarray)):
@@ -217,8 +251,9 @@ def _is_array_like(value: Any) -> bool:
 
 
 def _parse_key(key: str) -> tuple[str, str | None]:
+    """Normalize a CoolProp-style input key to canonical name and unit basis."""
     if "|" in key:
-        base, phase = key.split("|", 1)
+        _, phase = key.split("|", 1)
         raise NotImplementedError(f"Imposed phase '{phase}' is not implemented in pure-JAX ChillProp")
     if key not in _INPUT_ALIASES:
         raise ValueError(f"Input key {key} not supported")
@@ -226,6 +261,7 @@ def _parse_key(key: str) -> tuple[str, str | None]:
 
 
 def _to_molar_input(params: FluidParameters, canonical: str, basis: str, value: Any) -> Any:
+    """Convert mass-basis scalar inputs to the molar basis used internally."""
     if canonical == "Dmolar":
         return value if basis == "molar" else value / params.M
     if canonical in {"Hmolar", "Smolar", "Umolar"}:
@@ -234,18 +270,22 @@ def _to_molar_input(params: FluidParameters, canonical: str, basis: str, value: 
 
 
 def _gibbs_molar(params: FluidParameters, rho: Any, T: Any) -> Any:
+    """Return molar Gibbs free energy."""
     return enthalpy(params, rho, T) - T * entropy(params, rho, T)
 
 
 def _helmholtz_molar(params: FluidParameters, rho: Any, T: Any) -> Any:
+    """Return molar Helmholtz free energy."""
     return internal_energy(params, rho, T) - T * entropy(params, rho, T)
 
 
 def _compressibility_factor(params: FluidParameters, rho: Any, T: Any) -> Any:
+    """Return the compressibility factor `Z`."""
     return pressure(params, rho, T) / (rho * params.R * T)
 
 
 def _phase_index(params: FluidParameters, rho: Any, T: Any) -> Any:
+    """Map the internal phase classifier to CoolProp-compatible phase ids."""
     P = pressure(params, rho, T)
     Tc = params.Tc
     Pc = params.Pc
@@ -262,6 +302,7 @@ def _phase_index(params: FluidParameters, rho: Any, T: Any) -> Any:
 
 
 def _solve_state(params: FluidParameters, key1: str, val1: Any, key2: str, val2: Any) -> tuple[Any, Any]:
+    """Solve for molar density and temperature from a supported input pair."""
     c1, b1 = _parse_key(key1)
     c2, b2 = _parse_key(key2)
     v1 = _to_molar_input(params, c1, b1, val1)
@@ -301,6 +342,7 @@ def _solve_state(params: FluidParameters, key1: str, val1: Any, key2: str, val2:
 
 
 def _two_phase_context(params: FluidParameters, rho: Any, T: Any) -> tuple[Any, Any, Any, Any]:
+    """Return saturation properties and vapor quality for a candidate state."""
     if not isinstance(T, jax.core.Tracer):
         try:
             if np.asarray(T).shape == () and float(T) >= params.Tc:
@@ -316,6 +358,7 @@ def _two_phase_context(params: FluidParameters, rho: Any, T: Any) -> tuple[Any, 
 
 
 def _weighted_property(params: FluidParameters, rho: Any, T: Any, func, *, mass_mult: float = 1.0) -> Any:
+    """Blend single-phase and two-phase property values on a mass basis if needed."""
     rho_l, rho_v, is_twophase, q_calc = _two_phase_context(params, rho, T)
     single = func(params, rho, T)
     if params.pseudo_pure:
@@ -335,6 +378,7 @@ def _weighted_property(params: FluidParameters, rho: Any, T: Any, func, *, mass_
 
 
 def _trivial_output(params: FluidParameters, out_key: str) -> float:
+    """Return CoolProp-style trivial outputs that do not require a state solve."""
     trivial = {
         "Tcrit": params.Tc,
         "T_critical": params.Tc,
@@ -372,6 +416,7 @@ def _trivial_output(params: FluidParameters, out_key: str) -> float:
 
 
 def _evaluate_output(params: FluidParameters, out_key: str, rho: Any, T: Any) -> Any:
+    """Evaluate a supported CoolProp output key at the solved state."""
     if out_key in {"D", "Density"}:
         return rho * params.M
     if out_key == "Dmolar":
@@ -436,6 +481,7 @@ def _evaluate_output(params: FluidParameters, out_key: str, rho: Any, T: Any) ->
 
 
 def PropsSI(*args: Any) -> Any:
+    """Evaluate a CoolProp-style property query for scalar or vector inputs."""
     if len(args) == 2:
         out_key, fluid = args
         params = get_params(fluid)
@@ -464,6 +510,7 @@ def PropsSI(*args: Any) -> Any:
 
 
 def PhaseSI(name1: str, prop1: float, name2: str, prop2: float, fluid: str) -> str:
+    """Return the string phase label for a CoolProp-style state specification."""
     phase = int(PropsSI("Phase", name1, prop1, name2, prop2, fluid))
     reverse = {
         iphase_liquid: "liquid",
@@ -480,16 +527,19 @@ def PhaseSI(name1: str, prop1: float, name2: str, prop2: float, fluid: str) -> s
 
 
 def Props1SI(fluid: str, output: str) -> float:
+    """Return a state-independent CoolProp-style property."""
     return PropsSI(output, fluid)
 
 
 def get_phase_index(key: str) -> int:
+    """Return the integer code for a CoolProp phase identifier string."""
     if key not in _PHASE_INDEX:
         raise ValueError(f"Invalid phase key {key}")
     return _PHASE_INDEX[key]
 
 
 def set_reference_state(*_args: Any, **_kwargs: Any) -> None:
+    """Reject mutable reference-state changes for the pure-JAX backend."""
     raise NotImplementedError("Reference-state mutation is not yet implemented in pure-JAX ChillProp")
 
 
@@ -497,6 +547,7 @@ class AbstractState:
     """Pure-JAX HEOS-like state wrapper for supported pure and pseudo-pure fluids."""
 
     def __init__(self, backend: str, fluid: str):
+        """Initialize an abstract state for a supported backend and fluid."""
         if backend not in _SUPPORTED_BACKENDS:
             raise NotImplementedError(f"Backend '{backend}' is not implemented in pure-JAX ChillProp")
         self.params = get_params(fluid)
@@ -504,6 +555,7 @@ class AbstractState:
         self.temperature = None
 
     def update(self, input_pair: int, val1: float, val2: float):
+        """Update the state from a supported CoolProp input-pair constant."""
         if input_pair == PT_INPUTS:
             self.rho, self.temperature = _solve_state(self.params, "P", val1, "T", val2)
         elif input_pair == HmassP_INPUTS:
@@ -524,73 +576,92 @@ class AbstractState:
             raise NotImplementedError(f"AbstractState.update for pair {input_pair} not implemented in pure-JAX ChillProp")
 
     def _require_state(self):
+        """Ensure `update` has been called before reading state-dependent outputs."""
         if self.rho is None or self.temperature is None:
             raise ValueError("State has not been updated")
 
     def rhomolar(self):
+        """Return molar density."""
         self._require_state()
         return self.rho
 
     def rhomass(self):
+        """Return mass density."""
         self._require_state()
         return self.rho * self.params.M
 
     def hmolar(self):
+        """Return molar enthalpy."""
         self._require_state()
         return enthalpy(self.params, self.rho, self.temperature)
 
     def hmass(self):
+        """Return mass-specific enthalpy."""
         return self.hmolar() / self.params.M
 
     def smolar(self):
+        """Return molar entropy."""
         self._require_state()
         return entropy(self.params, self.rho, self.temperature)
 
     def smass(self):
+        """Return mass-specific entropy."""
         return self.smolar() / self.params.M
 
     def umolar(self):
+        """Return molar internal energy."""
         self._require_state()
         return internal_energy(self.params, self.rho, self.temperature)
 
     def umass(self):
+        """Return mass-specific internal energy."""
         return self.umolar() / self.params.M
 
     def p(self):
+        """Return pressure."""
         self._require_state()
         return pressure(self.params, self.rho, self.temperature)
 
     def T(self):
+        """Return temperature."""
         self._require_state()
         return self.temperature
 
     def Q(self):
+        """Return vapor quality."""
         self._require_state()
         return _evaluate_output(self.params, "Q", self.rho, self.temperature)
 
     def cpmolar(self):
+        """Return molar constant-pressure heat capacity."""
         self._require_state()
         return cpmolar(self.params, self.rho, self.temperature)
 
     def cpmass(self):
+        """Return mass-specific constant-pressure heat capacity."""
         return self.cpmolar() / self.params.M
 
     def cvmolar(self):
+        """Return molar constant-volume heat capacity."""
         self._require_state()
         return cvmolar(self.params, self.rho, self.temperature)
 
     def cvmass(self):
+        """Return mass-specific constant-volume heat capacity."""
         return self.cvmolar() / self.params.M
 
     def viscosity(self):
+        """Return dynamic viscosity."""
         self._require_state()
         return viscosity(self.params, self.rho, self.temperature)
 
     def conductivity(self):
+        """Return thermal conductivity."""
         self._require_state()
         return thermal_conductivity(self.params, self.rho, self.temperature)
 
     def keyed_output(self, key: int):
+        """Return a CoolProp keyed output for the current state."""
         self._require_state()
         mapping = {
             iDmolar: self.rhomolar(),
