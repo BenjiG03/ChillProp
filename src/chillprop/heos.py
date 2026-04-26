@@ -18,29 +18,11 @@ from chillprop.parameters import (
 )
 
 def alpha0_lead(term: IdealHelmholtzLead, tau: jax.Array, delta: jax.Array) -> jax.Array:
-    # a1 + a2*tau
-    # Note: CoolProp LogTau uses log(tau). Lead uses linear?
-    # Checking CoolProp source or docs:
-    # Lead term: a1 + a2*tau (usually related to enthalpy/entropy integration constants)
-    # Actually, often it is log(delta) + a1 + a2*tau.
-    # The log(delta) comes from ideal gas law integration?
-    # CoolProp separates the log(delta) term usually?
-    # Let's check CoolProp docs. 
-    # Ideal helmholtz energy alpha0 = h0/(RT) - s0/R - 1 + ln(delta/tau_0?) ...
-    # Usually a term 'log(delta)' is implicit for ideal gas?
-    # Wait, the JSON had 'IdealGasHelmholtzLead'.
-    # I should check logic.
-    # But strictly evaluating the TERM:
-    # It is likely a1 + a2*tau.
+    # Lead term: a1 + a2 * tau, providing reference enthalpy/entropy offsets.
     return term.a1 + term.a2 * tau
 
 def alpha0_enthalpy_entropy_offset(term: IdealHelmholtzEnthalpyEntropyOffset, tau: jax.Array, delta: jax.Array) -> jax.Array:
-    # Same form as Lead: a1 + a2*tau
-    # Specifically: alpha0 = h0/(RTc) * tau - s0/R
-    # Wait, usually a1 = -s0/R, a2 = h0/(RTc)
-    # Check CoolProp:
-    # "a1": -14.49..., "a2": 8.82...
-    # It is simply a1 + a2 * tau
+    # Enthalpy/entropy offset term: a1 + a2 * tau (same form as the lead term).
     return term.a1 + term.a2 * tau
 
 def alpha0_logtau(term: IdealHelmholtzLogTau, tau: jax.Array, delta: jax.Array) -> jax.Array:
@@ -52,21 +34,12 @@ def alpha0_power(term: IdealHelmholtzPower, tau: jax.Array, delta: jax.Array) ->
     return jnp.sum(term.n * (tau ** term.t))
 
 def alpha0_planck_einstein(term: IdealHelmholtzPlanckEinstein, tau: jax.Array, delta: jax.Array) -> jax.Array:
-    # sum(n_i * log(1 - exp(-gamma_i * tau))) where gamma_i is theta_i / Tc?
-    # term.t is "t". In CoolProp JSON it was "t".
-    # Usually t = theta/Tc.
-    # So exp(-t * tau) ? No, tau = Tc/T.
-    # theta/T = theta/Tc * Tc/T = t * tau.
-    # So log(1 - exp(-t * tau))
+    # Planck-Einstein term: sum(n_i * log(1 - exp(-t_i * tau))) where t_i stores theta_i / Tc.
     vals = term.n * jnp.log(1 - jnp.exp(-term.t * tau))
     return jnp.sum(vals)
 
 def alpha0_planck_einstein_function_t(term: IdealHelmholtzPlanckEinsteinFunctionT, tau: jax.Array, delta: jax.Array, Tr: float) -> jax.Array:
-    # term.v is "v" (theta).
-    # theta/T = v / T = v / (Tr / tau) = v * tau / Tr
-    # Term is n * log(1 - exp(-theta/T))
-    # It seems logic is same, just parameterization differs (absolute v vs dimensionless t).
-    theta = term.v
+    # Parameterization uses absolute theta (term.v), so theta/T = term.v * tau / Tr.
     theta = term.v
     val = term.n * jnp.log(1 - jnp.exp(-theta * tau / Tr))
     return jnp.sum(val)
@@ -125,17 +98,9 @@ def alpha0_cp0_polyt(term: IdealHelmholtzCP0PolyT, tau: jax.Array, delta: jax.Ar
         
         return h_part - s_part
 
-    # Vectorized computation
-    # JAX scan or vmap? 
-    # Since terms are small (len(c) ~ 5-10), direct sum is fine.
-    # But shapes must match. c, t are 1D arrays. T is scalar (or batched).
-    # We can use vmap over (c, t).
-    
-    # vmap over parameters, broadcast over state
-    # T_ = T if scalar, else... T might be array.
-    # Let's assume T is scalar for now or broadcasatable.
-    
-    # We iterate manually to avoid shape complexity if c is small
+    # Terms are few and share shape, so a direct sum keeps broadcasting straightforward.
+    # c and t are 1D arrays while T can be scalar or batched.
+    # We iterate manually to avoid extra vmap complexity for the small parameter set.
     val = jnp.array(0.0, dtype=tau.dtype)
     for i in range(len(c)):
         val += term_val(c[i], t[i])
@@ -148,14 +113,8 @@ def alphar_power(term: ResidualHelmholtzPower, tau: jax.Array, delta: jax.Array)
     # If l>0, it is an exponential term.
     # Note: delta^0 = 1. exp(-1) != 1. So we must conditionally apply exp.
     
-    # Calculate exponential part
-    # We use jnp.where to handle l=0 vs l!=0
-    # exp_part = exp(-delta^l) if l!=0 else 1.0
-    
-    # To handle gradients correctly, we should execute the power only if needed?
-    # Or just use math: if l=0, we want 1. 
-    # Can we shift l? No.
-    # jnp.where is safe.
+    # Calculate exponential part: use exp(-delta^l) when l != 0, otherwise keep factor at 1.
+    # jnp.where keeps the gradient well-defined across both cases.
     
     exp_factor = jnp.where(term.l != 0, jnp.exp(-(delta ** term.l)), 1.0)
     

@@ -100,7 +100,8 @@ ChillProp has been rigorously validated against CoolProp for **Nitrogen**, **Air
 - **VLE:** Correct phase equilibrium and saturation properties.
 - **Transport:** High-accuracy viscosity and thermal conductivity models implemented for key species (N2, O2, Ar, CO2, H2, CH4).
 
-See the [Wiki](Wiki.md) for detailed validation plots and benchmark results.
+See the [Wiki](wiki/wiki.md) for detailed validation plots and benchmark results.
+For API scope parity work, see [PropSI / PropsSI feature gap analysis](docs/wiki/PropSI_Feature_Gap.md).
 
 ## Benchmarks
 

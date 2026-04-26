@@ -31,21 +31,8 @@ def get_alpha_and_derivs(params: FluidParameters, rho: jax.Array, T: jax.Array):
     }
 
 def pressure(params: FluidParameters, rho: jax.Array, T: jax.Array) -> jax.Array:
-    # P = rho * R * T * (1 + delta * alphar_delta)
-    # Note: alpha0 does not affect Pressure directly (only ideal gas part which is P=rhoRT)
-    # The term delta * alphar_delta accounts for non-ideality.
-    # What about alpha0 derivative w.r.t delta? 
-    # alpha0 = log(delta) + ...
-    # da0_ddelta = 1/delta
-    # If we used total alpha aka alpha = a0 + ar.
-    # P = rho^2 * R * T * (d_alpha_drho) ?
-    # P = - (dF/dV)_T = ... = rho^2 * (dA/drho)_T
-    # A = R T alpha.
-    # dA/drho = R T * (dalpha/ddelta * ddelta/drho) = RT * alpha_delta * (1/rhoc).
-    # P = rho^2 * RT * alpha_delta / rhoc = rho * (rho/rhoc) * RT * alpha_delta = rho * delta * RT * alpha_delta.
-    # alpha_delta = da0_ddelta + dar_ddelta = 1/delta + dar_ddelta.
-    # P = rho * RT * delta * (1/delta + dar_ddelta) = rho * RT * (1 + delta * dar_ddelta).
-    # This matches.
+    # Pressure comes from the Helmholtz derivative: P = rho * R * T * (1 + delta * dar_ddelta)
+    # (alpha0 contributes only to the ideal-gas component).
     
     # We can calculate just ar derivatives for efficiency if we only need P.
     tau = params.Tr / T

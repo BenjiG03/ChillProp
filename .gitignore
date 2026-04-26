@@ -8,3 +8,4 @@ dist/
 *.egg-info/
 ChillProp.egg-info/
 CoolProp/
+scratch/

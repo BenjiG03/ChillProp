@@ -105,7 +105,7 @@ def viscosity_higher_order(params: FluidParameters, rho: jax.Array, T: jax.Array
             Tt = 216.592
             rho_tL = 1178.53
             R = 188.9241525
-            M = 44.0095e-3 # kg/mol? Wait params.M is kg/mol.
+            M = 44.0095e-3 # kg/mol
             # CoolProp implementation hardcodes 84446887.43579945 
             # eta_tL = pow(rho_tL, 2.0 / 3.0) * sqrt(HEOS.gas_constant() * Tt) / (pow(HEOS.molar_mass(), 1.0 / 6.0) * 84446887.43579945);
             
@@ -118,7 +118,7 @@ def viscosity_higher_order(params: FluidParameters, rho: jax.Array, T: jax.Array
             rhor = rhomass / rho_tL
             
             # Hardcoded constant in CoolProp seems specific
-            # Let's try to match exactly
+            # Match the constant used in CoolProp.
             denom = (params.M**(1.0/6.0)) * 84446887.43579945
             eta_tL = (rho_tL**(2.0/3.0)) * jnp.sqrt(params.R * Tt) / denom
             

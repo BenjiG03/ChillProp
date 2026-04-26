@@ -1,59 +1,75 @@
 import jax
-import jax.numpy as jnp
 import numpy as np
-import equinox as eqx
-import CoolProp.CoolProp as CP
-from chillprop.parameters import FluidParameters
-from chillprop.core import pressure
-from scripts.extract_params import extract_fluid_params
+import pytest
+
+import chillprop.highlevel as CH
+
 
 jax.config.update("jax_enable_x64", True)
 
-def test_gradient_parity():
-    # Load Params
-    data = extract_fluid_params('Nitrogen')
-    params = FluidParameters.from_json(data)
-    
-    # Test Point (Supercritical)
-    T_vals = [150.0, 300.0]
-    rho_vals = [1.0, 1000.0, 10000.0]
-    
-    jit_dP_drho = eqx.filter_jit(jax.grad(pressure, argnums=1))
-    jit_dP_dT = eqx.filter_jit(jax.grad(pressure, argnums=2))
-    
-    failures = []
-    
-    print("\nTesting Gradients...")
-    for T in T_vals:
-        for rho in rho_vals:
-            # JAX
-            # rho must be molar for core.pressure
-            # So dP/drho is Pa / (mol/m^3) = J/mol?
-            dp_drho_jax = float(jit_dP_drho(params, jnp.array(rho), jnp.array(T)))
-            dp_dt_jax = float(jit_dP_dT(params, jnp.array(rho), jnp.array(T)))
-            
-            # CoolProp
-            # 'd(P)/d(Dmolar)|T'
-            try:
-                ref_dp_drho = CP.PropsSI('d(P)/d(Dmolar)|T', 'T', T, 'Dmolar', rho, 'Nitrogen')
-                ref_dp_dt = CP.PropsSI('d(P)/d(T)|Dmolar', 'T', T, 'Dmolar', rho, 'Nitrogen')
-            except Exception as e:
-                print(f"Skipping {T}, {rho}: {e}")
-                continue
-                
-            # Compare
-            rtol = 1e-5 
-            
-            if not np.isclose(dp_drho_jax, ref_dp_drho, rtol=rtol):
-                failures.append(f"dP/drho mismatch at {T} K, {rho} mol/m3: JAX={dp_drho_jax:.4e}, CP={ref_dp_drho:.4e}")
-            
-            if not np.isclose(dp_dt_jax, ref_dp_dt, rtol=rtol):
-                failures.append(f"dP/dT mismatch at {T} K, {rho} mol/m3: JAX={dp_dt_jax:.4e}, CP={ref_dp_dt:.4e}")
-                
-            print(f"T={T}, rho={rho} -> dP/drho: JAX={dp_drho_jax:.2e} CP={ref_dp_drho:.2e} | dP/dT: JAX={dp_dt_jax:.2e} CP={ref_dp_dt:.2e}")
+SUPPORTED_FLUIDS = [
+    "Air",
+    "Argon",
+    "CarbonDioxide",
+    "Ethane",
+    "Hydrogen",
+    "IsoButane",
+    "Methane",
+    "n-Butane",
+    "n-Dodecane",
+    "Nitrogen",
+    "Oxygen",
+    "Propane",
+    "Water",
+]
 
-    assert not failures, "\n".join(failures)
-    print("Gradient Parity Passed!")
+GRAD_RTOL = 1e-6
+FD_T_STEP = 1e-4
+FD_P_STEP = 1.0
+FD_RHO_STEP_FACTOR = 1e-6
 
-if __name__ == "__main__":
-    test_gradient_parity()
+
+def _rel_err(a, b):
+    denom = max(abs(b), 1e-12)
+    return abs(a - b) / denom
+
+
+@pytest.mark.parametrize("fluid", SUPPORTED_FLUIDS)
+def test_density_gradient_vs_finite_difference(fluid):
+    T0 = max(CH.PropsSI("Tcrit", fluid) * 1.35, CH.PropsSI("Tmin", fluid) + 10.0)
+    P0 = max(2e5, 0.35 * CH.PropsSI("pcrit", fluid))
+
+    def rho_of_T(T):
+        return CH.PropsSI("D", "T", T, "P", P0, fluid)
+
+    grad_val = float(jax.grad(rho_of_T)(T0))
+    fd_val = float((rho_of_T(T0 + FD_T_STEP) - rho_of_T(T0 - FD_T_STEP)) / (2.0 * FD_T_STEP))
+    assert _rel_err(grad_val, fd_val) < GRAD_RTOL, f"{fluid}: grad={grad_val}, fd={fd_val}"
+
+
+@pytest.mark.parametrize("fluid", SUPPORTED_FLUIDS)
+def test_enthalpy_gradient_vs_finite_difference(fluid):
+    T0 = max(CH.PropsSI("Tcrit", fluid) * 1.25, CH.PropsSI("Tmin", fluid) + 15.0)
+    P0 = max(2e5, 0.4 * CH.PropsSI("pcrit", fluid))
+
+    def h_of_P(P):
+        return CH.PropsSI("H", "T", T0, "P", P, fluid)
+
+    grad_val = float(jax.grad(h_of_P)(P0))
+    fd_val = float((h_of_P(P0 + FD_P_STEP) - h_of_P(P0 - FD_P_STEP)) / (2.0 * FD_P_STEP))
+    assert _rel_err(grad_val, fd_val) < GRAD_RTOL, f"{fluid}: grad={grad_val}, fd={fd_val}"
+
+
+@pytest.mark.parametrize("fluid", SUPPORTED_FLUIDS)
+def test_pressure_gradient_vs_finite_difference(fluid):
+    T0 = max(CH.PropsSI("Tcrit", fluid) * 1.2, CH.PropsSI("Tmin", fluid) + 10.0)
+    P0 = max(2e5, 0.45 * CH.PropsSI("pcrit", fluid))
+    rho0 = CH.PropsSI("Dmolar", "T", T0, "P", P0, fluid)
+    drho = max(abs(rho0) * FD_RHO_STEP_FACTOR, 1e-3)
+
+    def p_of_rho(rho):
+        return CH.PropsSI("P", "T", T0, "Dmolar", rho, fluid)
+
+    grad_val = float(jax.grad(p_of_rho)(rho0))
+    fd_val = float((p_of_rho(rho0 + drho) - p_of_rho(rho0 - drho)) / (2.0 * drho))
+    assert _rel_err(grad_val, fd_val) < GRAD_RTOL, f"{fluid}: grad={grad_val}, fd={fd_val}"

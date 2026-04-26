@@ -22,6 +22,13 @@ build-backend = "setuptools.build_meta"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 
+[tool.setuptools]
+package-dir = {"" = "src"}
+
 [tool.setuptools.packages.find]
+where = ["src"]
 include = ["chillprop*"]
 exclude = ["CoolProp*", "validation_plots*", "scripts*", "tests*"]
+
+[tool.setuptools.package-data]
+chillprop = ["data/*.json"]
