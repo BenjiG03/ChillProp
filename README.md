@@ -1,24 +1,25 @@
-# ChillProp ❄️🚀
+# ChillProp
 
-**ChillProp** is a differentiable, GPU-accelerated thermodynamic property library for Python, built on [JAX](https://github.com/google/jax) and designed to be API-compatible with [CoolProp](http://www.coolprop.org/).
+ChillProp is a JAX-based thermodynamic property library with a CoolProp-like public API for supported pure and pseudo-pure fluids. The implementation uses Helmholtz-energy formulations, differentiable Newton solvers, and JAX transformations for automatic differentiation and batched execution.
 
-> [!WARNING]
-> **UNDER CONSTRUCTION**: This library is currently in active development. Features and APIs may change.
+## Status
 
-## Why ChillProp?
+The repository is under active development. The current implementation focuses on:
 
-| Feature | CoolProp | ChillProp |
-| :--- | :---: | :---: |
-| **Accuracy** | ✅ Reference Standard | ✅ Matches CoolProp |
-| **Differentiability** | ❌ No | ✅ **Auto-Diff (JAX)** |
-| **Acceleration** | ❌ CPU Only | ✅ **GPU/TPU (JIT)** |
-
-ChillProp allows you to incorporate accurate thermodynamic properties directly into your machine learning models, optimization loops, and differentiable physics simulations.
+- Pure and pseudo-pure fluids bundled in `src/chillprop/data`
+- `PropsSI`, `Props1SI`, `PhaseSI`, and a subset of `AbstractState`
+- Differentiable state solves for `PT`, `PH`, `PS`, `TQ`, and density-temperature inputs
+- Automated parity coverage against CoolProp for the supported test matrix
 
 ## Installation
 
 ```bash
-# Will be available through PyPI in the near future
+pip install chillprop
+```
+
+For local development:
+
+```bash
 git clone https://github.com/BenjiG03/ChillProp.git
 cd ChillProp
 pip install -e .
@@ -26,86 +27,51 @@ pip install -e .
 
 ## Quick Start
 
-ChillProp mimics the CoolProp High-Level API (`PropsSI`, `AbstractState`).
-Validation has mostly focused on dry air so far, so use other species at your own risk.
-
-### using `PropsSI`
-
-```python
-import chillprop.highlevel as CH
-import jax.numpy as jnp
-
-# Scalar evaluation (Density of Air at 300 K, 10 bar)
-rho = CH.PropsSI("D", "T", 300.0, "P", 1e6, "Air")
-print(f"Density: {rho} kg/m3")
-
-# Vectorized evaluation (Zero-overhead batching)
-T_vec = jnp.array([300.0, 310.0, 320.0])
-P_vec = jnp.array([1e6, 1e6, 1.5e6])
-rho_vec = CH.PropsSI("D", "T", T_vec, "P", P_vec, "Air")
-print(f"Vector Density: {rho_vec}")
-```
-
-### Automatic Differentiation (`jax.grad`)
-
-ChillProp is natively differentiable! You can extract arbitrary thermodynamic partial derivatives seamlessly using JAX, resolving mathematical derivatives rather than slow or unstable finite differences:
-
 ```python
 import jax
-import chillprop.highlevel as CH
-
-# Target function: Calculate Enthalpy given T and P
-def calc_enthalpy(P):
-    # Returns scalar enthalpy for Nitrogen at 400 K
-    return CH.PropsSI("H", "T", 400.0, "P", P, "Nitrogen")
-
-# Create a compiled derivative function: dh/dP
-dh_dP_func = jax.grad(calc_enthalpy)
-
-# Evaluate the exact derivative at P = 5 MPa
-exact_derivative = dh_dP_func(5e6)
-print(f"dh/dP at 5 MPa: {exact_derivative} J/kg/Pa")
-```
-
-### using `AbstractState`
-
-```python
-import chillprop.highlevel as CH
 import jax.numpy as jnp
+import chillprop.highlevel as CH
 
-# Create state
-AS = CH.AbstractState("HEOS", "Nitrogen")
+rho = CH.PropsSI("D", "T", 300.0, "P", 1e6, "Air")
 
-# Update state (PT Input)
-AS.update(CH.PT_INPUTS, 1e6, 300)
+T = jnp.array([280.0, 300.0, 320.0])
+P = jnp.array([5e5, 1e6, 2e6])
+h = CH.PropsSI("H", "T", T, "P", P, "Nitrogen")
 
-print(f"Viscosity: {AS.viscosity()} Pa-s")
-print(f"Conductivity: {AS.conductivity()} W/m/K")
+dh_dP = jax.grad(lambda p: CH.PropsSI("H", "T", 400.0, "P", p, "Nitrogen"))(5e6)
+
+state = CH.AbstractState("HEOS", "Nitrogen")
+state.update(CH.PT_INPUTS, 1e6, 300.0)
+mu = state.viscosity()
 ```
 
-## Validation & Parity
+## Documentation
 
-- **Air Components**: Nitrogen (N2), Oxygen (O2), Argon (Ar)
-- **Combustion Species**: Hydrogen (H2), Carbon Dioxide (CO2), Water (H2O), Methane (CH4), Ethane (C2H6), Propane (C3H8), n-Butane, IsoButane, n-Dodecane
+- [Documentation overview](docs/wiki/Overview.md)
+- [Usage guide notebook](docs/notebooks/Usage_Guide.ipynb)
+- [Architecture and implementation details](docs/wiki/Architecture.md)
+- [Validation summary and parity plots](docs/wiki/Validation.md)
+- [Implementation gaps relative to CoolProp](docs/wiki/Implementation_Gaps.md)
 
-## Known Limitations
-- **Ethane Viscosity**: The viscosity model for Ethane (Modified Batschinski-Hildebrand) is currently unstable in some regimes, yielding NaN or infinite values.
-- **Complex Hydrocarbons**: Transport properties for higher hydrocarbons (n-Butane, Dodecane) may have lower accuracy at high pressures due to simplified model implementations.
+## Supported Materials
 
-## Validation & Parity
+The automated high-level parity suite currently covers:
 
-ChillProp has been rigorously validated against CoolProp for **Nitrogen**, **Air**, and **Combustion Species**:
+- `Air`
+- `Argon`
+- `CarbonDioxide`
+- `Ethane`
+- `Hydrogen`
+- `IsoButane`
+- `Methane`
+- `n-Butane`
+- `n-Dodecane`
+- `Nitrogen`
+- `Oxygen`
+- `Propane`
+- `Water`
 
-- **Density:** Exact matches in single-phase regions.
-- **VLE:** Correct phase equilibrium and saturation properties.
-- **Transport:** High-accuracy viscosity and thermal conductivity models implemented for key species (N2, O2, Ar, CO2, H2, CH4).
-
-See the [Wiki](wiki/wiki.md) for detailed validation plots and benchmark results.
-For API scope parity work, see [PropSI / PropsSI feature gap analysis](docs/wiki/PropSI_Feature_Gap.md).
-
-## Benchmarks
-
-Calculations are **4.4x faster** than CoolProp when batched and JIT-compiled on CPU (AMD Ryzen 7). GPU acceleration benchmarks are pending testing.
+Transport-property parity is exercised in the automated grid for `Argon`, `Hydrogen`, `Nitrogen`, `Oxygen`, and `Propane`.
 
 ## License
 

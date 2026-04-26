@@ -1,0 +1,3550 @@
+{
+  "supported_fluids": [
+    "Air",
+    "Argon",
+    "CarbonDioxide",
+    "Ethane",
+    "Hydrogen",
+    "IsoButane",
+    "Methane",
+    "n-Butane",
+    "n-Dodecane",
+    "Nitrogen",
+    "Oxygen",
+    "Propane",
+    "Water"
+  ],
+  "transport_validated_fluids": [
+    "Argon",
+    "Hydrogen",
+    "Nitrogen",
+    "Oxygen",
+    "Propane"
+  ],
+  "fluids": {
+    "Air": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 132.5306,
+          "expected": 132.5306,
+          "rel_err": 0.0
+        },
+        "pcrit": {
+          "actual": 3786000.0,
+          "expected": 3786000.0,
+          "rel_err": 0.0
+        },
+        "rhomolar_critical": {
+          "actual": 11830.8,
+          "expected": 11830.8,
+          "rel_err": 0.0
+        },
+        "Ttriple": {
+          "actual": 59.75,
+          "expected": 59.75,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 5264.1810687705665,
+          "expected": 5264.1810687705665,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 59.75,
+          "expected": 59.75,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 2000.0,
+          "expected": 2000.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 2000000000.0,
+          "expected": 2000000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": 0.0335,
+          "expected": 0.0335,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.02896546,
+          "expected": 0.02896546,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.31451,
+          "expected": 8.31451,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 7.313655002609347e-16,
+          "mean_rel_err": 4.181600415160744e-16,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 8.134785846984228e-16,
+          "mean_rel_err": 4.710829805977145e-16,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 1.844933784895956e-15,
+          "mean_rel_err": 6.037965114204946e-16,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 3.924611856930345e-09,
+          "mean_rel_err": 1.1860370029070242e-09,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.924611881448628e-09,
+          "mean_rel_err": 1.1860369585816353e-09,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 2.1134773001745835e-09,
+          "mean_rel_err": 6.41666391433129e-10,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.1134772065478843e-09,
+          "mean_rel_err": 6.416663431186998e-10,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 5.076079011656802e-09,
+          "mean_rel_err": 1.5498796247876153e-09,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 5.076078859329062e-09,
+          "mean_rel_err": 1.549879557166702e-09,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 2.3571568185723226e-08,
+          "mean_rel_err": 6.161648378229648e-09,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.3571568236450566e-08,
+          "mean_rel_err": 6.1616483734592e-09,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 5.971392767842288e-09,
+          "mean_rel_err": 1.616049849705245e-09,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 5.971392755657101e-09,
+          "mean_rel_err": 1.616049823179695e-09,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 8.351913205205906e-09,
+          "mean_rel_err": 2.2325062481062405e-09,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 8.35191329203942e-09,
+          "mean_rel_err": 2.2325062781103023e-09,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 7.368994572062395e-09,
+          "mean_rel_err": 2.009314095798813e-09,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 7.3689946467031265e-09,
+          "mean_rel_err": 2.0093141153580747e-09,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 3.541202389706131e-10,
+          "mean_rel_err": 1.4037843872422395e-10,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 5.767151629494754e-09,
+          "mean_rel_err": 1.6616122412529642e-09,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {},
+      "two_phase": {},
+      "notes": [
+        "Transport properties are available for some fluids, but the automated parity grid currently covers transport only for Argon, Hydrogen, Nitrogen, Oxygen, and Propane.",
+        "The two-phase grid is not part of the automated parity suite for this fluid because CoolProp does not report it as a pure fluid."
+      ],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 0.0,
+        "mean_rel_err": 0.0,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 2.3571568236450566e-08,
+        "mean_rel_err": 1.6298097606479367e-09,
+        "tolerance_default": 5e-08
+      }
+    },
+    "Argon": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 150.687,
+          "expected": 150.68700000001058,
+          "rel_err": 7.01644860413277e-14
+        },
+        "pcrit": {
+          "actual": 4863000.0,
+          "expected": 4863000.544876666,
+          "rel_err": 1.1204536392296033e-07
+        },
+        "rhomolar_critical": {
+          "actual": 13407.429658556124,
+          "expected": 13407.429658563326,
+          "rel_err": 5.371185403936484e-13
+        },
+        "Ttriple": {
+          "actual": 83.806,
+          "expected": 83.806,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 68892.4770797671,
+          "expected": 68892.4770797671,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 83.806,
+          "expected": 83.806,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 2000.0,
+          "expected": 2000.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 1000000000.0,
+          "expected": 1000000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": -0.00219,
+          "expected": -0.00219,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.039948,
+          "expected": 0.039948,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.31451,
+          "expected": 8.31451,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 3.648218309476943e-16,
+          "mean_rel_err": 1.3856112736382725e-16,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.4977366006476375e-16,
+          "mean_rel_err": 1.177116436602797e-16,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 1.9151192067964255e-16,
+          "mean_rel_err": 9.575596033982128e-17,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 3.2469225314150067e-09,
+          "mean_rel_err": 8.459475075846725e-10,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.24692250727969e-09,
+          "mean_rel_err": 8.459474944620041e-10,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 2.829898399874496e-10,
+          "mean_rel_err": 7.245799211060173e-11,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.8298978079405097e-10,
+          "mean_rel_err": 7.245792430864848e-11,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 7.50755963296988e-09,
+          "mean_rel_err": 1.9657780711977146e-09,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 7.50755959963e-09,
+          "mean_rel_err": 1.9657780391783116e-09,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 1.6021024860491503e-09,
+          "mean_rel_err": 4.4225604904289574e-10,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.6021024130690984e-09,
+          "mean_rel_err": 4.4225602740033235e-10,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 8.708978439506101e-10,
+          "mean_rel_err": 2.330306330442301e-10,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 8.708978390098565e-10,
+          "mean_rel_err": 2.3303065415542744e-10,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 1.2249206393718503e-10,
+          "mean_rel_err": 3.1813315001251775e-11,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.2249209096030681e-10,
+          "mean_rel_err": 3.181331406173281e-11,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 1.8335154918607756e-10,
+          "mean_rel_err": 4.7424437670225746e-11,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.8335149357803595e-10,
+          "mean_rel_err": 4.742448330097363e-11,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 1.7410340263874454e-10,
+          "mean_rel_err": 4.7762576611028857e-11,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 1.0799930935806138e-09,
+          "mean_rel_err": 2.795847968200117e-10,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {
+        "V": {
+          "num_checks": 4,
+          "max_rel_err": 1.4813396681518933e-16,
+          "mean_rel_err": 3.7033491703797334e-17,
+          "tolerance": 0.005
+        },
+        "L": {
+          "num_checks": 4,
+          "max_rel_err": 4.476435624567459e-08,
+          "mean_rel_err": 1.624421947560105e-08,
+          "tolerance": 0.005
+        },
+        "Prandtl": {
+          "num_checks": 4,
+          "max_rel_err": 4.493127922653611e-08,
+          "mean_rel_err": 1.6686475792755305e-08,
+          "tolerance": 0.005
+        }
+      },
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 3.0815553560561226e-15,
+          "mean_rel_err": 1.5539846681583216e-15,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.0201017465235085e-15,
+          "mean_rel_err": 1.5188641275092723e-15,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 5.120551117046937e-13,
+          "mean_rel_err": 1.449491395169153e-13,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 3.0134793033937454e-15,
+          "mean_rel_err": 9.696750690397945e-16,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 2.88119975563121e-15,
+          "mean_rel_err": 9.591194198825303e-16,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 1.1859095288072497e-15,
+          "mean_rel_err": 2.8919304906914834e-16,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 1.159622283193982e-15,
+          "mean_rel_err": 2.844759298164519e-16,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 2.1500834985059726e-15,
+          "mean_rel_err": 1.177627851586172e-15,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 2.140649959939656e-15,
+          "mean_rel_err": 1.179751715488354e-15,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 1.1204536392296033e-07,
+        "mean_rel_err": 1.0185997382362435e-08,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 7.50755963296988e-09,
+        "mean_rel_err": 3.802381833989397e-10,
+        "tolerance_default": 5e-08
+      },
+      "transport_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 12,
+        "max_rel_err": 4.493127922653611e-08,
+        "mean_rel_err": 1.0976898435129949e-08,
+        "tolerance_default": 0.005
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 5.120551117046937e-13,
+        "mean_rel_err": 1.528818313474653e-14,
+        "tolerance_default": 0.001
+      }
+    },
+    "CarbonDioxide": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 304.1282,
+          "expected": 304.1282000029807,
+          "rel_err": 9.800795699888983e-12
+        },
+        "pcrit": {
+          "actual": 7377300.0,
+          "expected": 7377298.373446752,
+          "rel_err": 2.204808813938221e-07
+        },
+        "rhomolar_critical": {
+          "actual": 10624.9063,
+          "expected": 10624.905587175585,
+          "rel_err": 6.708995295936062e-08
+        },
+        "Ttriple": {
+          "actual": 216.592,
+          "expected": 216.592,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 517964.34344772575,
+          "expected": 517964.34344772575,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 216.592,
+          "expected": 216.592,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 2000.0,
+          "expected": 2000.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 800000000.0,
+          "expected": 800000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": 0.22394,
+          "expected": 0.22394,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.0440098,
+          "expected": 0.0440098,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.31451,
+          "expected": 8.31451,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 1.5634333028036227e-15,
+          "mean_rel_err": 8.860877049177744e-16,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.5412630681218823e-15,
+          "mean_rel_err": 8.365376709643255e-16,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 1.893625269314588e-15,
+          "mean_rel_err": 5.020976092879589e-16,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 2.3238504980069185e-11,
+          "mean_rel_err": 6.20319893436621e-12,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.323855327681607e-11,
+          "mean_rel_err": 6.203156567757306e-12,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 1.0512321432181124e-11,
+          "mean_rel_err": 3.0020762018079304e-12,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.0512236641031002e-11,
+          "mean_rel_err": 3.001997976478059e-12,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 2.788592128173219e-11,
+          "mean_rel_err": 7.717833203733412e-12,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.788588063178167e-11,
+          "mean_rel_err": 7.71777745283588e-12,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 1.5027379029898587e-11,
+          "mean_rel_err": 5.8844452616258536e-12,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.5027511027657976e-11,
+          "mean_rel_err": 5.884455195773062e-12,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 2.871418766156304e-11,
+          "mean_rel_err": 7.568783812128735e-12,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.871409805224549e-11,
+          "mean_rel_err": 7.568792621882357e-12,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 1.3136824815002384e-11,
+          "mean_rel_err": 3.6053713812316423e-12,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.313682015676635e-11,
+          "mean_rel_err": 3.6053780850300143e-12,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 1.2786888486698673e-11,
+          "mean_rel_err": 3.6150897269978915e-12,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.2786958432235465e-11,
+          "mean_rel_err": 3.6151231150342546e-12,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 8.21800326470527e-12,
+          "mean_rel_err": 2.673726630179825e-12,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 1.8126181389660005e-11,
+          "mean_rel_err": 7.333052959650012e-12,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {},
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 1.1576250560837562e-15,
+          "mean_rel_err": 6.680806198775987e-16,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 1.1412093771284617e-15,
+          "mean_rel_err": 6.706736122408187e-16,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 3.574045740002078e-13,
+          "mean_rel_err": 1.0456597883733175e-13,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 3.528711453538095e-15,
+          "mean_rel_err": 9.121728243336236e-16,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.6749225919491275e-15,
+          "mean_rel_err": 9.65058506659449e-16,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 5.624313430270889e-16,
+          "mean_rel_err": 2.902610095609614e-16,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 4.792381552180612e-16,
+          "mean_rel_err": 1.8707095873112557e-16,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 1.0682028764003661e-15,
+          "mean_rel_err": 3.518940945711623e-16,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 1.1798855871625566e-15,
+          "mean_rel_err": 3.4756722670671965e-16,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [
+        "Transport properties are available for some fluids, but the automated parity grid currently covers transport only for Argon, Hydrogen, Nitrogen, Oxygen, and Propane."
+      ],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 2.204808813938221e-07,
+        "mean_rel_err": 2.6143694104443875e-08,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 2.871418766156304e-11,
+        "mean_rel_err": 4.26012419247488e-12,
+        "tolerance_default": 5e-08
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 3.574045740002078e-13,
+        "mean_rel_err": 1.089587576900132e-14,
+        "tolerance_default": 0.001
+      }
+    },
+    "Ethane": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 305.322,
+          "expected": 305.3220000000155,
+          "rel_err": 5.082586039983951e-14
+        },
+        "pcrit": {
+          "actual": 4872200.0,
+          "expected": 4872199.977781725,
+          "rel_err": 4.560214068643735e-09
+        },
+        "rhomolar_critical": {
+          "actual": 6856.8866849999995,
+          "expected": 6856.886685000089,
+          "rel_err": 1.2998680723239313e-14
+        },
+        "Ttriple": {
+          "actual": 90.368,
+          "expected": 90.368,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 1.142107639085233,
+          "expected": 1.142107639085233,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 90.368,
+          "expected": 90.368,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 675.0,
+          "expected": 675.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 900000000.0,
+          "expected": 900000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": 0.099,
+          "expected": 0.099,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.03006904,
+          "expected": 0.03006904,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.314472,
+          "expected": 8.314472,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 1.2294500625813105e-15,
+          "mean_rel_err": 4.995143254332119e-16,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.3519865822997918e-15,
+          "mean_rel_err": 5.531496764997443e-16,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 1.3380522252858178e-15,
+          "mean_rel_err": 3.3451305632145446e-16,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 1.480717384620572e-09,
+          "mean_rel_err": 3.7059109700359076e-10,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.4807174449958886e-09,
+          "mean_rel_err": 3.705911585537442e-10,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 8.081340002675408e-10,
+          "mean_rel_err": 2.0223507128294814e-10,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 8.081339947420525e-10,
+          "mean_rel_err": 2.0223505396944045e-10,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 1.8532139677471008e-09,
+          "mean_rel_err": 4.638070664169741e-10,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.8532140666315969e-09,
+          "mean_rel_err": 4.63807110131126e-10,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 7.821719878606539e-09,
+          "mean_rel_err": 1.9555467921926195e-09,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 7.821719841210976e-09,
+          "mean_rel_err": 1.955546797836449e-09,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 1.7320899689611511e-09,
+          "mean_rel_err": 4.3324976755499653e-10,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.7320899973163804e-09,
+          "mean_rel_err": 4.3324980323917684e-10,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 2.8788464842963805e-09,
+          "mean_rel_err": 7.200694583621733e-10,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.8788463553981293e-09,
+          "mean_rel_err": 7.200694328172633e-10,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 2.7595758503000672e-09,
+          "mean_rel_err": 6.902221237071497e-10,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.75957578656238e-09,
+          "mean_rel_err": 6.90222105186515e-10,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 1.1023459690801428e-09,
+          "mean_rel_err": 2.757985462356936e-10,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 2.5050112351244175e-09,
+          "mean_rel_err": 6.265825050901726e-10,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {},
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 2.3283672100601456e-15,
+          "mean_rel_err": 1.8114002217887225e-15,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 2.427074581498213e-15,
+          "mean_rel_err": 1.8275790790358386e-15,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 4.433141174041652e-11,
+          "mean_rel_err": 1.304294652533339e-11,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 2.028675277906717e-14,
+          "mean_rel_err": 4.418625766490372e-15,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 2.0139476013298087e-14,
+          "mean_rel_err": 4.3153288444985796e-15,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 8.532631371202433e-15,
+          "mean_rel_err": 2.9278407652583276e-15,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 8.464670482801028e-15,
+          "mean_rel_err": 2.9197019588457116e-15,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 8.4771997587236e-15,
+          "mean_rel_err": 3.2175182657118194e-15,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 8.652817390831585e-15,
+          "mean_rel_err": 3.2376872436462102e-15,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 1.1102230246251565e-16,
+          "mean_rel_err": 1.850371707708594e-17,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [
+        "Transport properties are available for some fluids, but the automated parity grid currently covers transport only for Argon, Hydrogen, Nitrogen, Oxygen, and Propane."
+      ],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 4.560214068643735e-09,
+        "mean_rel_err": 4.1457071756225975e-10,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 7.821719878606539e-09,
+        "mean_rel_err": 5.286912638378545e-10,
+        "tolerance_default": 5e-08
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 4.433141174041652e-11,
+        "mean_rel_err": 1.3067640711195739e-12,
+        "tolerance_default": 0.001
+      }
+    },
+    "Hydrogen": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 33.145,
+          "expected": 33.1443326883113,
+          "rel_err": 2.0133508041235144e-05
+        },
+        "pcrit": {
+          "actual": 1296400.0,
+          "expected": 1296357.6060553084,
+          "rel_err": 3.2702353496913944e-05
+        },
+        "rhomolar_critical": {
+          "actual": 15508.0,
+          "expected": 15501.88335350846,
+          "rel_err": 0.0003945744108670578
+        },
+        "Ttriple": {
+          "actual": 13.957,
+          "expected": 13.957,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 7357.828141607672,
+          "expected": 7357.828141607672,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 13.957,
+          "expected": 13.957,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 1000.0,
+          "expected": 1000.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 2000000000.0,
+          "expected": 2000000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": -0.219,
+          "expected": -0.219,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.00201588,
+          "expected": 0.00201588,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.314472,
+          "expected": 8.314472,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 2.076801058404277e-15,
+          "mean_rel_err": 1.0538481755200537e-15,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.0006278501247725e-15,
+          "mean_rel_err": 1.006885457729171e-15,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 6.465733785482721e-15,
+          "mean_rel_err": 1.6980714992176842e-15,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 8.406319212126702e-11,
+          "mean_rel_err": 2.1016318056578885e-11,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 8.406327024241696e-11,
+          "mean_rel_err": 2.1016355246396414e-11,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 3.328235800035074e-11,
+          "mean_rel_err": 8.321162545243966e-12,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.328238360610759e-11,
+          "mean_rel_err": 8.321218625675068e-12,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 1.1957975758479803e-10,
+          "mean_rel_err": 2.989539515627252e-11,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.1957982040706684e-10,
+          "mean_rel_err": 2.989539667388043e-11,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 2.0561136852526093e-11,
+          "mean_rel_err": 5.141174884761823e-12,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.0561217410053307e-11,
+          "mean_rel_err": 5.141207494546675e-12,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 3.926626253563519e-11,
+          "mean_rel_err": 9.81679202175579e-12,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.926628746252589e-11,
+          "mean_rel_err": 9.816791205951163e-12,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 1.2757026664756156e-10,
+          "mean_rel_err": 3.1897300727769536e-11,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.275702460119325e-10,
+          "mean_rel_err": 3.1897310484537406e-11,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 8.279510435865174e-11,
+          "mean_rel_err": 2.070017720241937e-11,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 8.279513125870066e-11,
+          "mean_rel_err": 2.070020088911695e-11,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 2.0115727266135346e-12,
+          "mean_rel_err": 5.035140250470993e-13,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 2.5180580283101885e-11,
+          "mean_rel_err": 6.296322272171051e-12,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {
+        "V": {
+          "num_checks": 4,
+          "max_rel_err": 1.1899330545950297e-08,
+          "mean_rel_err": 9.623524870798622e-09,
+          "tolerance": 0.005
+        },
+        "L": {
+          "num_checks": 4,
+          "max_rel_err": 7.178590831755893e-06,
+          "mean_rel_err": 3.982667973301941e-06,
+          "tolerance": 0.005
+        },
+        "Prandtl": {
+          "num_checks": 4,
+          "max_rel_err": 7.168294887524334e-06,
+          "mean_rel_err": 3.973069314113879e-06,
+          "tolerance": 0.005
+        }
+      },
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 2.2664122244925357e-15,
+          "mean_rel_err": 1.0062760274365416e-15,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 2.201631358547131e-15,
+          "mean_rel_err": 9.930039548032053e-16,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 5.855115658888475e-14,
+          "mean_rel_err": 3.316385366661333e-14,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 7.167518529204277e-15,
+          "mean_rel_err": 2.107276606639584e-15,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 7.172076308562332e-15,
+          "mean_rel_err": 2.07962389424719e-15,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 1.1630178558219547e-14,
+          "mean_rel_err": 3.114842846978609e-15,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 1.1701516829567635e-14,
+          "mean_rel_err": 3.114770310099518e-15,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 1.8504651326243644e-14,
+          "mean_rel_err": 3.631261542819554e-15,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 1.8576617036961388e-14,
+          "mean_rel_err": 3.626222777464991e-15,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 2.220446049250313e-16,
+          "mean_rel_err": 5.551115123125783e-17,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 0.0003945744108670578,
+        "mean_rel_err": 4.067366112774608e-05,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 1.2757026664756156e-10,
+        "mean_rel_err": 1.3019019815862828e-11,
+        "tolerance_default": 5e-08
+      },
+      "transport_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 12,
+        "max_rel_err": 7.178590831755893e-06,
+        "mean_rel_err": 2.655120270762206e-06,
+        "tolerance_default": 0.005
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 5.855115658888475e-14,
+        "mean_rel_err": 5.289264277833378e-15,
+        "tolerance_default": 0.001
+      }
+    },
+    "IsoButane": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 407.817,
+          "expected": 407.8100000000046,
+          "rel_err": 1.7164856171748133e-05
+        },
+        "pcrit": {
+          "actual": 3629000.0,
+          "expected": 3629000.0166496336,
+          "rel_err": 4.587939809761321e-09
+        },
+        "rhomolar_critical": {
+          "actual": 3879.756788283995,
+          "expected": 3879.756788281651,
+          "rel_err": 6.041017451268881e-13
+        },
+        "Ttriple": {
+          "actual": 113.73,
+          "expected": 113.73,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 0.022890839011893836,
+          "expected": 0.022890839011893836,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 113.73,
+          "expected": 113.73,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 575.0,
+          "expected": 575.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 35000000.0,
+          "expected": 35000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": 0.183531783208,
+          "expected": 0.183531783208,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.0581222,
+          "expected": 0.0581222,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.314472,
+          "expected": 8.314472,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 1.206666498038162e-13,
+          "mean_rel_err": 3.382259736074739e-14,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.2072427853644353e-13,
+          "mean_rel_err": 3.381776376168487e-14,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 7.349047061748224e-15,
+          "mean_rel_err": 2.3417796788031048e-15,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 4.7342114133336087e-11,
+          "mean_rel_err": 1.183939075219839e-11,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 4.734216883243207e-11,
+          "mean_rel_err": 1.1839389443481908e-11,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 2.109111171741712e-11,
+          "mean_rel_err": 5.28553382536286e-12,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.109098788792609e-11,
+          "mean_rel_err": 5.285494651413324e-12,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 5.448221200569895e-11,
+          "mean_rel_err": 1.363834580197974e-11,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 5.4482260858121066e-11,
+          "mean_rel_err": 1.3638362637464933e-11,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 3.6432167700980265e-11,
+          "mean_rel_err": 9.152301735769861e-12,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.6432161773504026e-11,
+          "mean_rel_err": 9.152350048949067e-12,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 3.5078988403252494e-11,
+          "mean_rel_err": 8.771895237839574e-12,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.5079022966842615e-11,
+          "mean_rel_err": 8.771913717777574e-12,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 3.4751911471365306e-11,
+          "mean_rel_err": 8.721293382094149e-12,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.4751807620967806e-11,
+          "mean_rel_err": 8.721230883136894e-12,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 3.9197926684017584e-11,
+          "mean_rel_err": 9.80205970717255e-12,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.919783678180479e-11,
+          "mean_rel_err": 9.80197510060054e-12,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 7.918180098050014e-11,
+          "mean_rel_err": 1.992778055483691e-11,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 7.796637171171683e-11,
+          "mean_rel_err": 1.9905090875047207e-11,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {},
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 0.0005167961445729732,
+          "mean_rel_err": 0.0002726371323493625,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 0.0005167961445729889,
+          "mean_rel_err": 0.00027263713234938915,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 0.0005159232208741451,
+          "mean_rel_err": 0.00039055902712324415,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 8.32145612326497e-06,
+          "mean_rel_err": 2.4243158545973458e-06,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 8.321456123261272e-06,
+          "mean_rel_err": 2.424315854559125e-06,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 2.9891311134624567e-05,
+          "mean_rel_err": 1.558297902740159e-05,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 2.98913111346788e-05,
+          "mean_rel_err": 1.5582979027409714e-05,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 6.21532145074656e-06,
+          "mean_rel_err": 1.902545646591101e-06,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 6.215321450608534e-06,
+          "mean_rel_err": 1.9025456465257565e-06,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [
+        "Transport properties are available for some fluids, but the automated parity grid currently covers transport only for Argon, Hydrogen, Nitrogen, Oxygen, and Propane."
+      ],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 1.7164856171748133e-05,
+        "mean_rel_err": 1.5608586105145127e-06,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 7.918180098050014e-11,
+        "mean_rel_err": 8.716219524796335e-12,
+        "tolerance_default": 5e-08
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 0.0005167961445729889,
+        "mean_rel_err": 9.756529728790804e-05,
+        "tolerance_default": 0.001
+      }
+    },
+    "Methane": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 190.564,
+          "expected": 190.56400265128696,
+          "rel_err": 1.3912842538630147e-08
+        },
+        "pcrit": {
+          "actual": 4599200.0,
+          "expected": 4599200.474282437,
+          "rel_err": 1.0312280137737333e-07
+        },
+        "rhomolar_critical": {
+          "actual": 10139.128,
+          "expected": 10139.137654850272,
+          "rel_err": 9.522358409767125e-07
+        },
+        "Ttriple": {
+          "actual": 90.6941,
+          "expected": 90.6941,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 11696.064114962215,
+          "expected": 11696.064114962215,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 90.6941,
+          "expected": 90.6941,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 625.0,
+          "expected": 625.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 1000000000.0,
+          "expected": 1000000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": 0.01142,
+          "expected": 0.01142,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.0160428,
+          "expected": 0.0160428,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.31451,
+          "expected": 8.31451,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 6.606848242899123e-16,
+          "mean_rel_err": 2.4405545439961946e-16,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 5.652925066196375e-16,
+          "mean_rel_err": 2.2231667667491987e-16,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 2.024966251902256e-16,
+          "mean_rel_err": 9.664611656806222e-17,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 1.2679998994586423e-09,
+          "mean_rel_err": 3.4546520299652703e-10,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.26799994807329e-09,
+          "mean_rel_err": 3.454651822033589e-10,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 6.782730066449053e-10,
+          "mean_rel_err": 1.844233547786853e-10,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 6.782728992658999e-10,
+          "mean_rel_err": 1.8442326773459085e-10,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 1.7198127747064395e-09,
+          "mean_rel_err": 4.666508883503009e-10,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.719812814075015e-09,
+          "mean_rel_err": 4.666508983993417e-10,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 1.5948588049075536e-09,
+          "mean_rel_err": 5.613875386376525e-10,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.5948587630656673e-09,
+          "mean_rel_err": 5.613875491540533e-10,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 6.559436339307934e-10,
+          "mean_rel_err": 2.0695452281185087e-10,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 6.559435454256702e-10,
+          "mean_rel_err": 2.069544735530901e-10,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 9.54828758149744e-10,
+          "mean_rel_err": 2.9960758929774856e-10,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 9.54828805267434e-10,
+          "mean_rel_err": 2.9960759066927e-10,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 1.0882666594992764e-09,
+          "mean_rel_err": 3.2626922191643075e-10,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.0882665044014457e-09,
+          "mean_rel_err": 3.262691708565208e-10,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 7.068433051152058e-10,
+          "mean_rel_err": 1.7963866096345719e-10,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 1.423497875915626e-09,
+          "mean_rel_err": 3.984887893576434e-10,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {},
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 3.491902961775196e-15,
+          "mean_rel_err": 2.1299820250839916e-15,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.3965750401111846e-15,
+          "mean_rel_err": 2.095232207161054e-15,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 3.7007960678310665e-13,
+          "mean_rel_err": 1.0186644586936483e-13,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 2.3096359172192972e-14,
+          "mean_rel_err": 4.104258210947079e-15,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 2.3253118350846455e-14,
+          "mean_rel_err": 4.1616501355073205e-15,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 4.6615546359165715e-14,
+          "mean_rel_err": 8.396011041615093e-15,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 4.664387620065815e-14,
+          "mean_rel_err": 8.414593417941839e-15,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 6.406849486691278e-14,
+          "mean_rel_err": 1.127407647729543e-14,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 6.408295633173462e-14,
+          "mean_rel_err": 1.1309729598326328e-14,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [
+        "Transport properties are available for some fluids, but the automated parity grid currently covers transport only for Argon, Hydrogen, Nitrogen, Oxygen, and Propane."
+      ],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 9.522358409767125e-07,
+        "mean_rel_err": 9.720649862661054e-08,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 1.719812814075015e-09,
+        "mean_rel_err": 2.6798222323493846e-10,
+        "tolerance_default": 5e-08
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 3.7007960678310665e-13,
+        "mean_rel_err": 1.5375197898324295e-14,
+        "tolerance_default": 0.001
+      }
+    },
+    "n-Butane": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 425.125,
+          "expected": 425.125000000008,
+          "rel_err": 1.885309511172897e-14
+        },
+        "pcrit": {
+          "actual": 3796000.0,
+          "expected": 3796000.0174158094,
+          "rel_err": 4.587937135189806e-09
+        },
+        "rhomolar_critical": {
+          "actual": 3922.769612987809,
+          "expected": 3922.769612988464,
+          "rel_err": 1.6693210406961366e-13
+        },
+        "Ttriple": {
+          "actual": 134.895,
+          "expected": 134.895,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 0.6656582208078881,
+          "expected": 0.6656582208078881,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 134.895,
+          "expected": 134.895,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 575.0,
+          "expected": 575.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 12000000.0,
+          "expected": 12000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": 0.200810094644,
+          "expected": 0.200810094644,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.0581222,
+          "expected": 0.0581222,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.314472,
+          "expected": 8.314472,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 1.3011822368273588e-15,
+          "mean_rel_err": 5.542472256841605e-16,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.3200449315838914e-15,
+          "mean_rel_err": 6.182885798745493e-16,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 1.165379928642647e-14,
+          "mean_rel_err": 4.75909937366746e-15,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 1.0684746778446497e-09,
+          "mean_rel_err": 2.6745479643742794e-10,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.0684746368693384e-09,
+          "mean_rel_err": 2.6745479048153986e-10,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 4.877638442108738e-10,
+          "mean_rel_err": 1.2217908907239598e-10,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 4.877638774956781e-10,
+          "mean_rel_err": 1.2217911206453784e-10,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 1.241507061516776e-09,
+          "mean_rel_err": 3.109067352001027e-10,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.2415070171325492e-09,
+          "mean_rel_err": 3.1090674952921513e-10,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 2.8904940759331363e-09,
+          "mean_rel_err": 7.270547515303779e-10,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.8904940569624037e-09,
+          "mean_rel_err": 7.270547170570786e-10,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 8.067716525072156e-10,
+          "mean_rel_err": 2.019705339514609e-10,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 8.067717964748328e-10,
+          "mean_rel_err": 2.0197055343505968e-10,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 7.801304615992837e-10,
+          "mean_rel_err": 1.9507772566158144e-10,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 7.801304509449142e-10,
+          "mean_rel_err": 1.9507771567542553e-10,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 9.323812443815918e-10,
+          "mean_rel_err": 2.333805061048894e-10,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 9.323812321574464e-10,
+          "mean_rel_err": 2.3338049162589715e-10,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 2.5895493857709345e-09,
+          "mean_rel_err": 6.515955073421181e-10,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 2.3998682034646346e-09,
+          "mean_rel_err": 6.053987494817242e-10,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {},
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 5.028309877552748e-15,
+          "mean_rel_err": 2.120191757413801e-15,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 5.076911739370817e-15,
+          "mean_rel_err": 2.084035399526037e-15,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 5.6963115442090625e-12,
+          "mean_rel_err": 1.7676331053304167e-12,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 3.8407889731342354e-14,
+          "mean_rel_err": 7.0690284922053e-15,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.839033694860443e-14,
+          "mean_rel_err": 7.0974638065655616e-15,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 6.37920094034641e-15,
+          "mean_rel_err": 1.4665037168205314e-15,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 6.402373875275551e-15,
+          "mean_rel_err": 1.4516286981356735e-15,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 4.898089957170622e-15,
+          "mean_rel_err": 1.1001903050412126e-15,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 4.85119997690471e-15,
+          "mean_rel_err": 1.0715288301868333e-15,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 2.220446049250313e-16,
+          "mean_rel_err": 3.700743415417188e-17,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [
+        "Transport properties are available for some fluids, but the automated parity grid currently covers transport only for Argon, Hydrogen, Nitrogen, Oxygen, and Propane."
+      ],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 4.587937135189806e-09,
+        "mean_rel_err": 4.1710208367172606e-10,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 2.8904940759331363e-09,
+        "mean_rel_err": 2.6865242281430054e-10,
+        "tolerance_default": 5e-08
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 5.6963115442090625e-12,
+        "mean_rel_err": 1.791130683770466e-13,
+        "tolerance_default": 0.001
+      }
+    },
+    "n-Dodecane": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 658.1,
+          "expected": 658.1000268582027,
+          "rel_err": 4.0811733115197407e-08
+        },
+        "pcrit": {
+          "actual": 1817000.0,
+          "expected": 1817569.5498990365,
+          "rel_err": 0.0003133579669994846
+        },
+        "rhomolar_critical": {
+          "actual": 1330.0,
+          "expected": 1330.3493202048062,
+          "rel_err": 0.00026257780531839016
+        },
+        "Ttriple": {
+          "actual": 263.6,
+          "expected": 263.6,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 0.62621086350047,
+          "expected": 0.62621086350047,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 263.6,
+          "expected": 263.6,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 700.0,
+          "expected": 700.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 200000000.0,
+          "expected": 200000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": 0.574182221240689,
+          "expected": 0.574182221240689,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.17033484,
+          "expected": 0.17033484,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.314472,
+          "expected": 8.314472,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 1.8226242299953774e-13,
+          "mean_rel_err": 8.34587749748938e-14,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.8217347632353958e-13,
+          "mean_rel_err": 8.3466874062671e-14,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 9.199908471016563e-15,
+          "mean_rel_err": 5.5839950782942304e-15,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 3.1234600976049216e-13,
+          "mean_rel_err": 1.2092567449017785e-13,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.123484563844316e-13,
+          "mean_rel_err": 1.2099797207733896e-13,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 2.459969165057018e-12,
+          "mean_rel_err": 7.31348019304624e-13,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.4600125144772468e-12,
+          "mean_rel_err": 7.313435333263501e-13,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 2.9869111456819287e-12,
+          "mean_rel_err": 8.576381784446367e-13,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.9868662280971694e-12,
+          "mean_rel_err": 8.576214706555741e-13,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 1.7632460410217519e-12,
+          "mean_rel_err": 4.591260848027932e-13,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.7633460288878287e-12,
+          "mean_rel_err": 4.591153980330203e-13,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 1.7284548282264749e-13,
+          "mean_rel_err": 4.391061319718569e-14,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.7275987188273709e-13,
+          "mean_rel_err": 4.387565923082208e-14,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 1.2911228044472622e-10,
+          "mean_rel_err": 4.40396290897187e-11,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.2911229208587266e-10,
+          "mean_rel_err": 4.403961564431719e-11,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 5.086753436382997e-12,
+          "mean_rel_err": 1.3094864168747885e-12,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 5.086795969385052e-12,
+          "mean_rel_err": 1.3094651317114003e-12,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 1.1658760861486578e-11,
+          "mean_rel_err": 3.100111403347574e-12,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 1.604233176044091e-10,
+          "mean_rel_err": 4.6053423335822886e-11,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {},
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 5.786891026318451e-15,
+          "mean_rel_err": 3.3272447614821674e-15,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 5.77343934852585e-15,
+          "mean_rel_err": 3.2984509759744326e-15,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 3.230754004506388e-11,
+          "mean_rel_err": 1.3392690578570318e-11,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 1.8632648229737585e-15,
+          "mean_rel_err": 7.367332388612652e-16,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 1.864574261269369e-15,
+          "mean_rel_err": 7.018846496665405e-16,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 3.1005001275629347e-15,
+          "mean_rel_err": 1.6304797084334008e-15,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.0716522616644095e-15,
+          "mean_rel_err": 1.6251103712285539e-15,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 3.4668484766252233e-15,
+          "mean_rel_err": 1.0274011492908504e-15,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.46928485824119e-15,
+          "mean_rel_err": 1.0461804835220542e-15,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 2.220446049250313e-16,
+          "mean_rel_err": 3.700743415417188e-17,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [
+        "Transport properties are available for some fluids, but the automated parity grid currently covers transport only for Argon, Hydrogen, Nitrogen, Oxygen, and Propane."
+      ],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 0.0003133579669994846,
+        "mean_rel_err": 5.23615076409991e-05,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 1.604233176044091e-10,
+        "mean_rel_err": 7.222507163473546e-12,
+        "tolerance_default": 5e-08
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 3.230754004506388e-11,
+        "mean_rel_err": 1.3406121071342933e-12,
+        "tolerance_default": 0.001
+      }
+    },
+    "Nitrogen": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 126.192,
+          "expected": 126.19199999958556,
+          "rel_err": 3.284131767947232e-12
+        },
+        "pcrit": {
+          "actual": 3395800.0,
+          "expected": 3395800.444647145,
+          "rel_err": 1.309403047204405e-07
+        },
+        "rhomolar_critical": {
+          "actual": 11183.901464580624,
+          "expected": 11183.901463735672,
+          "rel_err": 7.555069252949927e-11
+        },
+        "Ttriple": {
+          "actual": 63.151,
+          "expected": 63.151,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 12519.78348430944,
+          "expected": 12519.78348430944,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 63.151,
+          "expected": 63.151,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 2000.0,
+          "expected": 2000.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 2200000000.0,
+          "expected": 2200000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": 0.0372,
+          "expected": 0.0372,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.02801348,
+          "expected": 0.02801348,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.31451,
+          "expected": 8.31451,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 1.2635191522956492e-15,
+          "mean_rel_err": 4.796365414150926e-16,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.235627118631021e-15,
+          "mean_rel_err": 4.911936969997333e-16,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 1.3712857834204264e-15,
+          "mean_rel_err": 5.017659343879287e-16,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 1.9787537302973477e-09,
+          "mean_rel_err": 5.079541450230966e-10,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.9787537601018034e-09,
+          "mean_rel_err": 5.079542938536952e-10,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 2.2670217921896533e-10,
+          "mean_rel_err": 5.772558907688781e-11,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.2670214894685403e-10,
+          "mean_rel_err": 5.772562695981569e-11,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 3.271284755177915e-09,
+          "mean_rel_err": 8.389586588034903e-10,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.271284893471667e-09,
+          "mean_rel_err": 8.389587379902409e-10,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 1.2043681351874277e-09,
+          "mean_rel_err": 3.2822198975652714e-10,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.2043681350961824e-09,
+          "mean_rel_err": 3.2822194354080874e-10,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 5.975035166833577e-10,
+          "mean_rel_err": 1.5793340029921009e-10,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 5.975034320515466e-10,
+          "mean_rel_err": 1.5793338052033817e-10,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 9.24120845631184e-11,
+          "mean_rel_err": 2.3820128622572904e-11,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 9.241202652492573e-11,
+          "mean_rel_err": 2.382006162778806e-11,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 1.4053557877719627e-10,
+          "mean_rel_err": 3.609233103626814e-11,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.4053553067024533e-10,
+          "mean_rel_err": 3.6092289165784325e-11,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 4.0923823774325715e-10,
+          "mean_rel_err": 1.0299786815350003e-10,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 1.0171685961218215e-09,
+          "mean_rel_err": 2.61194846871749e-10,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {
+        "V": {
+          "num_checks": 4,
+          "max_rel_err": 2.3154318009809015e-15,
+          "mean_rel_err": 6.11955258317446e-16,
+          "tolerance": 0.005
+        },
+        "L": {
+          "num_checks": 4,
+          "max_rel_err": 3.7688800027545243e-08,
+          "mean_rel_err": 1.4135328685452399e-08,
+          "tolerance": 0.005
+        },
+        "Prandtl": {
+          "num_checks": 4,
+          "max_rel_err": 3.77973147234859e-08,
+          "mean_rel_err": 1.446354849390207e-08,
+          "tolerance": 0.005
+        }
+      },
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 3.4277669626824535e-15,
+          "mean_rel_err": 2.212281256885928e-15,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.3800335801325515e-15,
+          "mean_rel_err": 2.235547522356107e-15,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 1.1164717741168934e-12,
+          "mean_rel_err": 3.5788643292495866e-13,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 2.2618154832284376e-14,
+          "mean_rel_err": 5.933885562463568e-15,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 2.272490585284845e-14,
+          "mean_rel_err": 5.902481701467416e-15,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 1.3110452646234875e-15,
+          "mean_rel_err": 5.228408381378815e-16,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 1.4625160643905713e-15,
+          "mean_rel_err": 5.018634895980388e-16,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 3.9316641400110015e-13,
+          "mean_rel_err": 6.811619298662289e-14,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.930227913976406e-13,
+          "mean_rel_err": 6.8074500410223e-14,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 1.309403047204405e-07,
+        "mean_rel_err": 1.191083086770345e-08,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 3.271284893471667e-09,
+        "mean_rel_err": 2.1328033819489728e-10,
+        "tolerance_default": 5e-08
+      },
+      "transport_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 12,
+        "max_rel_err": 3.77973147234859e-08,
+        "mean_rel_err": 9.532959263769906e-09,
+        "tolerance_default": 0.005
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 1.1164717741168934e-12,
+        "mean_rel_err": 5.113860266927135e-14,
+        "tolerance_default": 0.001
+      }
+    },
+    "Oxygen": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 154.58100000000002,
+          "expected": 154.59938983528554,
+          "rel_err": 0.00011895153858699646
+        },
+        "pcrit": {
+          "actual": 5043000.0,
+          "expected": 5046410.521187217,
+          "rel_err": 0.0006758311027012159
+        },
+        "rhomolar_critical": {
+          "actual": 13630.0,
+          "expected": 13342.189355472588,
+          "rel_err": 0.02157147053300962
+        },
+        "Ttriple": {
+          "actual": 54.361,
+          "expected": 54.361,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 146.27764705809653,
+          "expected": 146.27764705809653,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 54.361,
+          "expected": 54.361,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 2000.0,
+          "expected": 2000.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 80000000.0,
+          "expected": 80000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": 0.0222,
+          "expected": 0.0222,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.0319988,
+          "expected": 0.0319988,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.31434,
+          "expected": 8.31434,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 1.524409785868534e-15,
+          "mean_rel_err": 7.555818474753391e-16,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.5609370833936015e-15,
+          "mean_rel_err": 7.736867974718042e-16,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 2.2146178652062e-15,
+          "mean_rel_err": 6.459302106851417e-16,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 2.646923567002324e-09,
+          "mean_rel_err": 7.252049264874556e-10,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.646923608796903e-09,
+          "mean_rel_err": 7.252049422388324e-10,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 2.6732916339756545e-10,
+          "mean_rel_err": 7.125623145383422e-11,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.6732911137025727e-10,
+          "mean_rel_err": 7.125621702415243e-11,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 4.388914863458318e-09,
+          "mean_rel_err": 1.198649517463557e-09,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 4.3889149218994154e-09,
+          "mean_rel_err": 1.1986495697709532e-09,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 1.7148108444754005e-09,
+          "mean_rel_err": 5.661594768556594e-10,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.714810822945678e-09,
+          "mean_rel_err": 5.661594931968763e-10,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 8.145945881439738e-10,
+          "mean_rel_err": 2.4444844025176064e-10,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 8.145945456864471e-10,
+          "mean_rel_err": 2.444484533941571e-10,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 1.1165600095385098e-10,
+          "mean_rel_err": 3.0980523669984635e-11,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.1165599216249965e-10,
+          "mean_rel_err": 3.0980510463302636e-11,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 1.7164846814955003e-10,
+          "mean_rel_err": 4.7067663409888467e-11,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.716483934717693e-10,
+          "mean_rel_err": 4.7067677415670325e-11,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 5.685037245605689e-10,
+          "mean_rel_err": 1.4465248571620458e-10,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 1.4298932592358154e-09,
+          "mean_rel_err": 3.9250877470800043e-10,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {
+        "V": {
+          "num_checks": 4,
+          "max_rel_err": 2.096003863772096e-15,
+          "mean_rel_err": 7.780889144778772e-16,
+          "tolerance": 0.005
+        },
+        "L": {
+          "num_checks": 4,
+          "max_rel_err": 3.060025853164613e-08,
+          "mean_rel_err": 1.1595763590826435e-08,
+          "tolerance": 0.005
+        },
+        "Prandtl": {
+          "num_checks": 4,
+          "max_rel_err": 3.11500828579953e-08,
+          "mean_rel_err": 1.216192178350727e-08,
+          "tolerance": 0.005
+        }
+      },
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 3.9038642289496865e-15,
+          "mean_rel_err": 1.9654824624657754e-15,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.807054344817227e-15,
+          "mean_rel_err": 1.920134998411415e-15,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 3.4014458356372432e-12,
+          "mean_rel_err": 9.860951896375812e-13,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 9.05225168164415e-15,
+          "mean_rel_err": 3.4371413587613115e-15,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 9.017229469617839e-15,
+          "mean_rel_err": 3.4638113284321152e-15,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 5.001846487859607e-16,
+          "mean_rel_err": 2.1867497127849428e-16,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 4.884798890758801e-16,
+          "mean_rel_err": 2.1355778505609412e-16,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 1.9246859549204083e-15,
+          "mean_rel_err": 5.200621303507237e-16,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 2.004956388906676e-15,
+          "mean_rel_err": 5.927084941543735e-16,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 1.1102230246251565e-16,
+          "mean_rel_err": 3.700743415417188e-17,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 0.02157147053300962,
+        "mean_rel_err": 0.0020332957431179847,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 4.3889149218994154e-09,
+        "mean_rel_err": 3.152348539359572e-10,
+        "tolerance_default": 5e-08
+      },
+      "transport_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 12,
+        "max_rel_err": 3.11500828579953e-08,
+        "mean_rel_err": 7.919228717474207e-09,
+        "tolerance_default": 0.005
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 3.4014458356372432e-12,
+        "mean_rel_err": 9.984637706006456e-14,
+        "tolerance_default": 0.001
+      }
+    },
+    "Propane": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 369.89,
+          "expected": 369.8900089509634,
+          "rel_err": 2.4198986771630686e-08
+        },
+        "pcrit": {
+          "actual": 4251200.0,
+          "expected": 4251165.328013042,
+          "rel_err": 8.15587827872537e-06
+        },
+        "rhomolar_critical": {
+          "actual": 5000.000000000001,
+          "expected": 5000.000623464834,
+          "rel_err": 1.246929509801939e-07
+        },
+        "Ttriple": {
+          "actual": 85.525,
+          "expected": 85.525,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 0.00017184840809308612,
+          "expected": 0.00017184840809308612,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 85.525,
+          "expected": 85.525,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 650.0,
+          "expected": 650.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 1000000000.0,
+          "expected": 1000000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": 0.1521,
+          "expected": 0.1521,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.04409562,
+          "expected": 0.04409562,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.314472,
+          "expected": 8.314472,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 2.4810163512043884e-15,
+          "mean_rel_err": 6.805513374023703e-16,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.450603774897494e-15,
+          "mean_rel_err": 6.551924574117799e-16,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 5.915015666156369e-15,
+          "mean_rel_err": 1.4787539165390922e-15,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 3.858488165696565e-12,
+          "mean_rel_err": 9.910315175349516e-13,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 3.858518304649024e-12,
+          "mean_rel_err": 9.910665430849645e-13,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 1.6987286573766644e-12,
+          "mean_rel_err": 4.499057333953544e-13,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.6988488528646403e-12,
+          "mean_rel_err": 4.49924214179845e-13,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 4.450885688202318e-12,
+          "mean_rel_err": 1.1639465520941502e-12,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 4.450888118068088e-12,
+          "mean_rel_err": 1.1639373872856383e-12,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 1.1059529540055892e-12,
+          "mean_rel_err": 3.7591692581848206e-13,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.1059812207072927e-12,
+          "mean_rel_err": 3.759801553207683e-13,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 1.780338320034835e-12,
+          "mean_rel_err": 4.684465227816435e-13,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.7802847752756132e-12,
+          "mean_rel_err": 4.684666813018926e-13,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 2.2454542166911686e-12,
+          "mean_rel_err": 5.83932734892275e-13,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.245318173298147e-12,
+          "mean_rel_err": 5.839113145020607e-13,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 2.3281706818370603e-12,
+          "mean_rel_err": 6.103172116271217e-13,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.3282451405605686e-12,
+          "mean_rel_err": 6.103721099016421e-13,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 2.569747461930401e-12,
+          "mean_rel_err": 9.238200199357434e-13,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 2.892161214908475e-12,
+          "mean_rel_err": 1.2152452086864009e-12,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {
+        "V": {
+          "num_checks": 4,
+          "max_rel_err": 8.809601661087986e-09,
+          "mean_rel_err": 6.19147260452679e-09,
+          "tolerance": 0.005
+        },
+        "L": {
+          "num_checks": 4,
+          "max_rel_err": 0.0006551410741638228,
+          "mean_rel_err": 0.0002631404927383348,
+          "tolerance": 0.005
+        },
+        "Prandtl": {
+          "num_checks": 4,
+          "max_rel_err": 0.0006555651103661073,
+          "mean_rel_err": 0.00026325752474754666,
+          "tolerance": 0.005
+        }
+      },
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 6.6903553031669974e-15,
+          "mean_rel_err": 3.2604367357743107e-15,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 6.656756956405751e-15,
+          "mean_rel_err": 3.242385454693409e-15,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 2.847350143503915e-10,
+          "mean_rel_err": 9.204181289429538e-11,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 1.0045274690041036e-14,
+          "mean_rel_err": 3.020738953081564e-15,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 9.91247213198518e-15,
+          "mean_rel_err": 2.9401851989256786e-15,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 3.744498204445166e-15,
+          "mean_rel_err": 1.2707651978376394e-15,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.790968318684046e-15,
+          "mean_rel_err": 1.2497682196348204e-15,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 2.119519708213021e-15,
+          "mean_rel_err": 7.316228077577881e-16,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 2.145823452425074e-15,
+          "mean_rel_err": 6.92723144250302e-16,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 2.220446049250313e-16,
+          "mean_rel_err": 7.401486830834377e-17,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 8.15587827872537e-06,
+        "mean_rel_err": 7.549791105888359e-07,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 4.450888118068088e-12,
+        "mean_rel_err": 5.714517665027144e-13,
+        "tolerance_default": 5e-08
+      },
+      "transport_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 12,
+        "max_rel_err": 0.0006555651103661073,
+        "mean_rel_err": 0.0001754680696528287,
+        "tolerance_default": 0.005
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 2.847350143503915e-10,
+        "mean_rel_err": 9.205829553487567e-12,
+        "tolerance_default": 0.001
+      }
+    },
+    "Water": {
+      "trivial": {
+        "Tcrit": {
+          "actual": 647.096,
+          "expected": 647.0959999999873,
+          "rel_err": 1.9677027558231307e-14
+        },
+        "pcrit": {
+          "actual": 22064000.0,
+          "expected": 22063999.999997754,
+          "rel_err": 1.0181064403429853e-13
+        },
+        "rhomolar_critical": {
+          "actual": 17873.72799560906,
+          "expected": 17873.72794440601,
+          "rel_err": 2.8647101144108935e-09
+        },
+        "Ttriple": {
+          "actual": 273.16,
+          "expected": 273.16,
+          "rel_err": 0.0
+        },
+        "ptriple": {
+          "actual": 611.6548008968684,
+          "expected": 611.6548008968684,
+          "rel_err": 0.0
+        },
+        "Tmin": {
+          "actual": 273.16,
+          "expected": 273.16,
+          "rel_err": 0.0
+        },
+        "Tmax": {
+          "actual": 2000.0,
+          "expected": 2000.0,
+          "rel_err": 0.0
+        },
+        "Pmax": {
+          "actual": 1000000000.0,
+          "expected": 1000000000.0,
+          "rel_err": 0.0
+        },
+        "acentric": {
+          "actual": 0.3442920843,
+          "expected": 0.3442920843,
+          "rel_err": 0.0
+        },
+        "molar_mass": {
+          "actual": 0.018015268,
+          "expected": 0.018015268,
+          "rel_err": 0.0
+        },
+        "gas_constant": {
+          "actual": 8.314371357587,
+          "expected": 8.314371357587,
+          "rel_err": 0.0
+        }
+      },
+      "single_phase": {
+        "D": {
+          "num_checks": 4,
+          "max_rel_err": 4.744581216331253e-15,
+          "mean_rel_err": 1.792076346860498e-15,
+          "tolerance": 5e-08
+        },
+        "Dmolar": {
+          "num_checks": 4,
+          "max_rel_err": 4.600103825336757e-15,
+          "mean_rel_err": 1.7613225233431189e-15,
+          "tolerance": 5e-08
+        },
+        "P": {
+          "num_checks": 4,
+          "max_rel_err": 6.753608227814165e-16,
+          "mean_rel_err": 2.072129797170255e-16,
+          "tolerance": 5e-08
+        },
+        "H": {
+          "num_checks": 4,
+          "max_rel_err": 1.9124178168074408e-11,
+          "mean_rel_err": 4.781412974844345e-12,
+          "tolerance": 5e-08
+        },
+        "Hmolar": {
+          "num_checks": 4,
+          "max_rel_err": 1.912412967584419e-11,
+          "mean_rel_err": 4.781403682201303e-12,
+          "tolerance": 5e-08
+        },
+        "S": {
+          "num_checks": 4,
+          "max_rel_err": 8.480682969520887e-12,
+          "mean_rel_err": 2.12039074374445e-12,
+          "tolerance": 5e-08
+        },
+        "Smolar": {
+          "num_checks": 4,
+          "max_rel_err": 8.48072649230285e-12,
+          "mean_rel_err": 2.1203724346315585e-12,
+          "tolerance": 5e-08
+        },
+        "U": {
+          "num_checks": 4,
+          "max_rel_err": 2.1935994067761203e-11,
+          "mean_rel_err": 5.484200548154676e-12,
+          "tolerance": 5e-08
+        },
+        "Umolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.1935918237198015e-11,
+          "mean_rel_err": 5.484181800319814e-12,
+          "tolerance": 5e-08
+        },
+        "C": {
+          "num_checks": 4,
+          "max_rel_err": 2.5730391243574577e-11,
+          "mean_rel_err": 6.4353160142114135e-12,
+          "tolerance": 5e-08
+        },
+        "Cpmolar": {
+          "num_checks": 4,
+          "max_rel_err": 2.5730374024579702e-11,
+          "mean_rel_err": 6.435304799354196e-12,
+          "tolerance": 5e-08
+        },
+        "O": {
+          "num_checks": 4,
+          "max_rel_err": 5.326559634121425e-11,
+          "mean_rel_err": 1.3316641801626162e-11,
+          "tolerance": 5e-08
+        },
+        "Cvmolar": {
+          "num_checks": 4,
+          "max_rel_err": 5.3265694658987506e-11,
+          "mean_rel_err": 1.3316634177437592e-11,
+          "tolerance": 5e-08
+        },
+        "G": {
+          "num_checks": 4,
+          "max_rel_err": 9.469811723707557e-12,
+          "mean_rel_err": 2.367751828961084e-12,
+          "tolerance": 5e-08
+        },
+        "Gmolar": {
+          "num_checks": 4,
+          "max_rel_err": 9.469729082780913e-12,
+          "mean_rel_err": 2.3677484502728854e-12,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmass": {
+          "num_checks": 4,
+          "max_rel_err": 8.92982877099864e-12,
+          "mean_rel_err": 2.232741103970114e-12,
+          "tolerance": 5e-08
+        },
+        "Helmholtzmolar": {
+          "num_checks": 4,
+          "max_rel_err": 8.929851084612868e-12,
+          "mean_rel_err": 2.2327090129976125e-12,
+          "tolerance": 5e-08
+        },
+        "A": {
+          "num_checks": 4,
+          "max_rel_err": 5.939832813398931e-12,
+          "mean_rel_err": 1.4862909858443906e-12,
+          "tolerance": 5e-08
+        },
+        "Z": {
+          "num_checks": 4,
+          "max_rel_err": 5.7737143838958405e-12,
+          "mean_rel_err": 1.4480959805816835e-12,
+          "tolerance": 5e-08
+        },
+        "Phase": {
+          "num_checks": 4,
+          "max_rel_err": 0.0,
+          "mean_rel_err": 0.0,
+          "tolerance": 5e-08
+        }
+      },
+      "transport": {},
+      "two_phase": {
+        "D": {
+          "num_checks": 6,
+          "max_rel_err": 2.6652411044323595e-15,
+          "mean_rel_err": 1.1534027642118586e-15,
+          "tolerance": 0.001
+        },
+        "Dmolar": {
+          "num_checks": 6,
+          "max_rel_err": 2.6721409547667444e-15,
+          "mean_rel_err": 1.1327770518239935e-15,
+          "tolerance": 0.001
+        },
+        "P": {
+          "num_checks": 6,
+          "max_rel_err": 3.973842236887486e-11,
+          "mean_rel_err": 1.0004949309867304e-11,
+          "tolerance": 0.001
+        },
+        "H": {
+          "num_checks": 6,
+          "max_rel_err": 3.566044522050124e-15,
+          "mean_rel_err": 9.06653064810623e-16,
+          "tolerance": 0.001
+        },
+        "Hmolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.608384839637433e-15,
+          "mean_rel_err": 9.262770591119565e-16,
+          "tolerance": 0.001
+        },
+        "S": {
+          "num_checks": 6,
+          "max_rel_err": 3.35582251655386e-14,
+          "mean_rel_err": 6.420912118168538e-15,
+          "tolerance": 0.001
+        },
+        "Smolar": {
+          "num_checks": 6,
+          "max_rel_err": 3.358351808619354e-14,
+          "mean_rel_err": 6.406299919917767e-15,
+          "tolerance": 0.001
+        },
+        "U": {
+          "num_checks": 6,
+          "max_rel_err": 4.473363169569999e-14,
+          "mean_rel_err": 8.793527425683074e-15,
+          "tolerance": 0.001
+        },
+        "Umolar": {
+          "num_checks": 6,
+          "max_rel_err": 4.47276865545055e-14,
+          "mean_rel_err": 8.763602246313738e-15,
+          "tolerance": 0.001
+        },
+        "Q": {
+          "num_checks": 6,
+          "max_rel_err": 2.220446049250313e-16,
+          "mean_rel_err": 7.401486830834377e-17,
+          "tolerance": 0.0001
+        }
+      },
+      "notes": [
+        "Transport properties are available for some fluids, but the automated parity grid currently covers transport only for Argon, Hydrogen, Nitrogen, Oxygen, and Propane."
+      ],
+      "trivial_summary": {
+        "num_checks": 11,
+        "max_rel_err": 2.8647101144108935e-09,
+        "mean_rel_err": 2.6043923655295326e-10,
+        "tolerance": 0.03
+      },
+      "single_phase_summary": {
+        "num_state_points": 4,
+        "num_output_checks": 80,
+        "max_rel_err": 5.3265694658987506e-11,
+        "mean_rel_err": 3.82074784755016e-12,
+        "tolerance_default": 5e-08
+      },
+      "two_phase_summary": {
+        "num_state_points": 6,
+        "num_output_checks": 60,
+        "max_rel_err": 3.973842236887486e-11,
+        "mean_rel_err": 1.003952677638565e-12,
+        "tolerance_default": 0.001
+      }
+    }
+  }
+}
