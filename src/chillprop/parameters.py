@@ -41,7 +41,7 @@ class IdealHelmholtzCP0Constant(IdealHelmholtzTerm):
     cp_over_R: float
     T0: float
     Tc: float
-    t: jnp.ndarray # Dummy to satisfy array interface slightly? No.
+    t: jnp.ndarray
 
 class IdealHelmholtzCP0PolyT(IdealHelmholtzTerm):
     c: jnp.ndarray
@@ -195,6 +195,7 @@ class ConductivityParameters(eqx.Module):
 
 class FluidParameters(eqx.Module):
     name: str
+    aliases: List[str]
     Tc: float
     rhoc: float
     Pc: float
@@ -202,6 +203,13 @@ class FluidParameters(eqx.Module):
     rhor: float
     R: float
     M: float
+    acentric: float
+    Tmin: float
+    Tmax: float
+    Pmin: float
+    Pmax: float
+    Ttriple: float
+    Ptriple: float
     pseudo_pure: bool
     alpha0: List[IdealHelmholtzTerm]
     alphar: List[ResidualHelmholtzTerm]
@@ -335,6 +343,7 @@ class FluidParameters(eqx.Module):
         
         return cls(
             name=fluid['INFO']['NAME'],
+            aliases=list(fluid.get('INFO', {}).get('ALIASES', [])),
             Tc=float(crit['T']),
             rhoc=float(crit['rhomolar']),
             Pc=float(crit['p']),
@@ -342,6 +351,13 @@ class FluidParameters(eqx.Module):
             rhor=float(reducing['rhomolar']),
             R=float(eos['gas_constant']),
             M=float(eos['molar_mass']),
+            acentric=float(eos.get('acentric', 0.0)),
+            Tmin=float(eos.get('Ttriple', fluid.get('STATES', {}).get('triple_liquid', {}).get('T', crit['T']))),
+            Tmax=float(eos.get('T_max', crit['T'])),
+            Pmin=float(fluid.get('STATES', {}).get('triple_vapor', {}).get('p', 0.0)),
+            Pmax=float(eos.get('p_max', crit['p'])),
+            Ttriple=float(eos.get('Ttriple', fluid.get('STATES', {}).get('triple_liquid', {}).get('T', crit['T']))),
+            Ptriple=float(fluid.get('STATES', {}).get('triple_liquid', {}).get('p', fluid.get('STATES', {}).get('triple_vapor', {}).get('p', 0.0))),
             pseudo_pure=bool(eos.get('pseudo_pure', False)),
             alpha0=alpha0,
             alphar=alphar,

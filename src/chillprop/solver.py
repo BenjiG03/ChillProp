@@ -78,10 +78,7 @@ def solve_rho_PT(params: FluidParameters, P: jax.Array, T: jax.Array) -> jax.Arr
     is_liquid_pressure = P > Psat
     guess_sub = jnp.where(is_liquid_pressure, rho_L_anc, rho_vapor_guess)
     
-    # Supercritical Logic:
-    # If P > Pc, we are dense supercritical fluid -> Guess rho_critical as a safe anchor?
-    # actually ideal gas is very bad for high P.
-    # Let's use rho_c for high pressure, ideal gas for low pressure.
+    # Supercritical logic: use rho_c for high pressures where the ideal-gas guess breaks down, otherwise ideal gas.
     is_high_pressure = P > params.Pc
     guess_sup = jnp.where(is_high_pressure, params.rhoc, rho_ideal)
 
@@ -106,8 +103,7 @@ def solve_2d(params: FluidParameters, func, target, guess, max_iter: int = 20):
         f_val = jnp.array(func(params, rho, T)) - jnp.array(target)
         
         # Jacobian dF/dX
-        # we can't use jax.jacobian(func) directly if func is not jittable or has non-array args?
-        # params is common.
+        # Wrap func so jax.jacobian always receives array inputs even though params are shared.
         def f_wrapper(x_vec):
             return jnp.array(func(params, x_vec[0], x_vec[1]))
             
