@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 validation_plots/
 build/
+docs/_build/
 dist/
 *.egg-info/
 ChillProp.egg-info/
