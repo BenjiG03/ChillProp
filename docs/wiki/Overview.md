@@ -5,6 +5,16 @@ This documentation set is organized for two use cases:
 - API users who need installation guidance, public API examples, and validation scope
 - Contributors who need implementation details, module boundaries, and current compatibility limits
 
+## Current Catalog
+
+The bundled runtime catalog currently includes `44` supported fluids spanning:
+
+- Air and permanent gases such as `Air`, `Helium`, `Hydrogen`, `Nitrogen`, `Oxygen`, `Neon`, `Argon`, `Krypton`, and `Xenon`
+- Hydrocarbons and related organics such as `Methane`, `Ethane`, `Propane`, `n-Pentane`, `n-Decane`, `n-Undecane`, `n-Dodecane`, `Cyclopentane`, `Isopentane`, `Neopentane`, `Ethanol`, and `Methanol`
+- Refrigerants and specialty fluids such as `R32`, `R134a`, `R1234yf`, `R1234ze(E)`, `R404A`, `R407C`, and `R410A`
+
+The authoritative supported-fluid list is maintained in `tests/fluid_catalog.py` and mirrored in [Validation](Validation.md).
+
 ## Reading Order
 
 1. [Usage Guide notebook](../notebooks/Usage_Guide.ipynb)
@@ -20,6 +30,7 @@ This documentation set is organized for two use cases:
 - `docs/wiki`: prose documentation
 - `docs/notebooks`: notebook-based usage material
 - `docs/plots`: generated parity figures used by the documentation
+- `docs/wiki/validation_stats.json`: machine-readable parity summary used by the documentation refresh workflow
 
 ## Contributor Quick Start
 

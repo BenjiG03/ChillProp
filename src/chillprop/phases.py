@@ -66,6 +66,12 @@ def solve_vle(params: FluidParameters, T: jax.Array, max_iter: int = 20) -> jax.
     
     if params.pseudo_pure:
         return jnp.array([rl_guess, rv_guess])
+
+    ps_guess = psat_anc(params, T)
+    from chillprop.solver import find_rho_PT
+
+    rl_seed = find_rho_PT(params, ps_guess, T, rl_guess)
+    rv_seed = find_rho_PT(params, ps_guess, T, rv_guess)
     
     def step(x, _):
         rl, rv = x[0], x[1]
@@ -88,11 +94,11 @@ def solve_vle(params: FluidParameters, T: jax.Array, max_iter: int = 20) -> jax.
         ])
         
         delta_x = jnp.linalg.solve(jac, f_val)
-        new_x = x - delta_x
+        new_x = jnp.maximum(x - delta_x, 1e-12)
         
         return new_x, None
 
-    x_final, _ = jax.lax.scan(step, jnp.array([rl_guess, rv_guess]), jnp.arange(max_iter))
+    x_final, _ = jax.lax.scan(step, jnp.array([rl_seed, rv_seed]), jnp.arange(max_iter))
     return x_final
 
 def vapor_quality(rho: jax.Array, rho_l: jax.Array, rho_v: jax.Array) -> jax.Array:

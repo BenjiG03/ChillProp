@@ -5,23 +5,7 @@ import jax.numpy as jnp
 
 import CoolProp.CoolProp as CP
 import chillprop.highlevel as CH
-
-
-SUPPORTED_FLUIDS = [
-    "Air",
-    "Argon",
-    "CarbonDioxide",
-    "Ethane",
-    "Hydrogen",
-    "IsoButane",
-    "Methane",
-    "n-Butane",
-    "n-Dodecane",
-    "Nitrogen",
-    "Oxygen",
-    "Propane",
-    "Water",
-]
+from fluid_catalog import SUPPORTED_FLUIDS, TRANSPORT_VALIDATED_FLUIDS, TWOPHASE_VALIDATED_FLUIDS
 
 TRIVIAL_KEYS = [
     "Tcrit",
@@ -87,16 +71,6 @@ OUTPUT_RTOL = {
     "Prandtl": 5e-3,
     "Q": 1e-4,
 }
-
-TRANSPORT_VALIDATED_FLUIDS = [
-    "Argon",
-    "Hydrogen",
-    "Nitrogen",
-    "Oxygen",
-    "Propane",
-]
-
-TWOPHASE_VALIDATED_FLUIDS = [fluid for fluid in SUPPORTED_FLUIDS if CP.get_fluid_param_string(fluid, "pure") == "true"]
 
 TRIVIAL_RTOL = 3e-2
 CORE_RTOL = 5e-8

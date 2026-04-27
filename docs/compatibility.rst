@@ -92,8 +92,9 @@ Transport-model implementations exist for more fluids than the current automated
 
 * ``Argon``
 * ``Hydrogen``
+* ``n-Decane``
 * ``Nitrogen``
 * ``Oxygen``
 * ``Propane``
 
-See :doc:`validation` for the distinction between implemented behavior and behavior covered by regression tests.
+Two-phase property support is also broader than the strict automated saturation-parity subset. See :doc:`validation` for the current transport and two-phase validation boundaries, including fluids that are implemented but not yet documented as parity-clean at the published tolerance.

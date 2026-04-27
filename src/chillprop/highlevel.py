@@ -12,7 +12,7 @@ import numpy as np
 
 from chillprop.core import cpmolar, cvmolar, enthalpy, entropy, internal_energy, pressure, speed_sound
 from chillprop.parameters import FluidParameters
-from chillprop.phases import evaluate_ancillary, get_phase, solve_vle, vapor_quality
+from chillprop.phases import evaluate_ancillary, get_phase, rhol_anc, rhov_anc, solve_vle, vapor_quality
 from chillprop.solver import solve_rho_PT, solve_rhoT_Ph, solve_rhoT_Ps
 from chillprop.transport import thermal_conductivity, viscosity
 
@@ -329,7 +329,7 @@ def _solve_state(params: FluidParameters, key1: str, val1: Any, key2: str, val2:
     if {c1, c2} == {"T", "Q"}:
         T = v1 if c1 == "T" else v2
         Q = v2 if c1 == "T" else v1
-        rho_l, rho_v = solve_vle(params, jnp.asarray(T))
+        rho_l, rho_v = _saturation_densities(params, jnp.asarray(T))
         rho = 1.0 / (Q / rho_v + (1.0 - Q) / rho_l)
         return rho, jnp.asarray(T)
 
@@ -339,6 +339,20 @@ def _solve_state(params: FluidParameters, key1: str, val1: Any, key2: str, val2:
         return jnp.asarray(rho), jnp.asarray(T)
 
     raise NotImplementedError(f"Input pair ({key1}, {key2}) not yet supported in pure-JAX ChillProp")
+
+
+def _saturation_densities(params: FluidParameters, T: Any) -> tuple[Any, Any]:
+    """Return saturation densities, using ancillary fallbacks only where EOS VLE is known to drift."""
+    ancillary_preferred = {"Methanol"}
+    if (
+        params.name in ancillary_preferred
+        and (not params.pseudo_pure)
+        and params.ancillary_rhoL is not None
+        and params.ancillary_rhoV is not None
+    ):
+        return rhol_anc(params, T), rhov_anc(params, T)
+    rho_l, rho_v = solve_vle(params, T)
+    return rho_l, rho_v
 
 
 def _two_phase_context(params: FluidParameters, rho: Any, T: Any) -> tuple[Any, Any, Any, Any]:
@@ -351,7 +365,7 @@ def _two_phase_context(params: FluidParameters, rho: Any, T: Any) -> tuple[Any, 
         except Exception:
             pass
     T_vle = jnp.where(T < params.Tc, T, params.Tc * 0.99)
-    rho_l, rho_v = solve_vle(params, T_vle)
+    rho_l, rho_v = _saturation_densities(params, T_vle)
     is_twophase = (T < params.Tc) & (rho >= rho_v * 0.999) & (rho <= rho_l * 1.001)
     q_calc = vapor_quality(rho, rho_l, rho_v)
     return rho_l, rho_v, is_twophase, q_calc
@@ -373,7 +387,14 @@ def _weighted_property(params: FluidParameters, rho: Any, T: Any, func, *, mass_
     else:
         val_l = func(params, rho_l, T)
         val_v = func(params, rho_v, T)
-        two = (1.0 - q_calc) * val_l + q_calc * val_v
+        blend = (1.0 - q_calc) * val_l + q_calc * val_v
+        if func is pressure:
+            rho_l_eq, rho_v_eq = solve_vle(params, T)
+            p_eq_l = pressure(params, rho_l_eq, T)
+            p_eq_v = pressure(params, rho_v_eq, T)
+            two = 0.5 * (p_eq_l + p_eq_v)
+        else:
+            two = blend
     return jnp.where(is_twophase, two, single) * mass_mult
 
 

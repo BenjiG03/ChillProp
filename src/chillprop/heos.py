@@ -14,6 +14,10 @@ from chillprop.parameters import (
     IdealHelmholtzCP0PolyT,
     ResidualHelmholtzPower,
     ResidualHelmholtzGaussian,
+    ResidualHelmholtzExponential,
+    ResidualHelmholtzDoubleExponential,
+    ResidualHelmholtzGaoB,
+    ResidualHelmholtzAssociating,
     ResidualHelmholtzNonAnalytic,
 )
 
@@ -87,12 +91,15 @@ def alpha0_cp0_polyt(term: IdealHelmholtzCP0PolyT, tau: jax.Array, delta: jax.Ar
     
     # helper for power term
     def term_val(ci, ti):
+        h_denom = jnp.where(jnp.abs(ti + 1.0) > 1e-10, ti + 1.0, 1.0)
+        s_denom = jnp.where(jnp.abs(ti) > 1e-10, ti, 1.0)
+
         # h_part:
         # Case ti != -1: h_part = ci/(ti+1) * (T^ti - T0^(ti+1)/T)
         # Case ti == -1: h_part = ci/T * (ln(T) - ln(T0))
         h_part = jnp.where(
             jnp.abs(ti + 1) > 1e-10, 
-            (ci / (ti + 1)) * (T**ti - (T0**(ti + 1)) / T),
+            (ci / h_denom) * (T**ti - (T0**(ti + 1)) / T),
             (ci / T) * (jnp.log(T) - jnp.log(T0))
         )
         
@@ -101,7 +108,7 @@ def alpha0_cp0_polyt(term: IdealHelmholtzCP0PolyT, tau: jax.Array, delta: jax.Ar
         # Case ti == 0: s_part = ci * ln(T/T0)
         s_part = jnp.where(
             jnp.abs(ti) > 1e-10,
-            (ci / ti) * (T**ti - T0**ti),
+            (ci / s_denom) * (T**ti - T0**ti),
             ci * (jnp.log(T) - jnp.log(T0))
         )
         
@@ -138,6 +145,31 @@ def alphar_gaussian(term: ResidualHelmholtzGaussian, tau: jax.Array, delta: jax.
         -term.eta * ((delta - term.epsilon)**2) - term.beta * ((tau - term.gamma)**2)
     )
     return jnp.sum(val)
+
+def alphar_exponential(term: ResidualHelmholtzExponential, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate a residual exponential term."""
+    val = term.n * (delta ** term.d) * (tau ** term.t) * jnp.exp(-term.g * (delta ** term.l))
+    return jnp.sum(val)
+
+def alphar_double_exponential(term: ResidualHelmholtzDoubleExponential, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate a residual double-exponential term."""
+    expo = -term.gd * (delta ** term.ld) - term.gt * (tau ** term.lt)
+    val = term.n * (delta ** term.d) * (tau ** term.t) * jnp.exp(expo)
+    return jnp.sum(val)
+
+def alphar_gaob(term: ResidualHelmholtzGaoB, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate a residual GaoB term."""
+    Ftau = (tau ** term.t) * jnp.exp(1.0 / (term.b + term.beta * ((tau - term.gamma) ** 2)))
+    Fdelta = (delta ** term.d) * jnp.exp(term.eta * ((delta - term.epsilon) ** 2))
+    return jnp.sum(term.n * Ftau * Fdelta)
+
+def alphar_associating(term: ResidualHelmholtzAssociating, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate a residual SAFT associating term."""
+    eta = term.vbarn * delta
+    g = 0.5 * (2.0 - eta) / ((1.0 - eta) ** 3)
+    deltabar = g * (jnp.exp(term.epsilonbar * tau) - 1.0) * term.kappabar
+    X = 2.0 / (jnp.sqrt(1.0 + 4.0 * deltabar * delta) + 1.0)
+    return term.a * term.m * (jnp.log(X) - 0.5 * X + 0.5)
 
 def alphar_nonanalytic(term: ResidualHelmholtzNonAnalytic, tau: jax.Array, delta: jax.Array) -> jax.Array:
     """
@@ -205,6 +237,14 @@ def alphar(params: FluidParameters, tau: jax.Array, delta: jax.Array) -> jax.Arr
             val += alphar_power(term, tau, delta)
         elif isinstance(term, ResidualHelmholtzGaussian):
             val += alphar_gaussian(term, tau, delta)
+        elif isinstance(term, ResidualHelmholtzExponential):
+            val += alphar_exponential(term, tau, delta)
+        elif isinstance(term, ResidualHelmholtzDoubleExponential):
+            val += alphar_double_exponential(term, tau, delta)
+        elif isinstance(term, ResidualHelmholtzGaoB):
+            val += alphar_gaob(term, tau, delta)
+        elif isinstance(term, ResidualHelmholtzAssociating):
+            val += alphar_associating(term, tau, delta)
         elif isinstance(term, ResidualHelmholtzNonAnalytic):
             val += alphar_nonanalytic(term, tau, delta)
     return val

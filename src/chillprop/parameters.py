@@ -80,6 +80,43 @@ class ResidualHelmholtzGaussian(ResidualHelmholtzTerm):
     beta: jnp.ndarray
     gamma: jnp.ndarray
 
+class ResidualHelmholtzExponential(ResidualHelmholtzTerm):
+    """Residual exponential term."""
+    n: jnp.ndarray
+    d: jnp.ndarray
+    t: jnp.ndarray
+    g: jnp.ndarray
+    l: jnp.ndarray
+
+class ResidualHelmholtzDoubleExponential(ResidualHelmholtzTerm):
+    """Residual double-exponential term."""
+    n: jnp.ndarray
+    d: jnp.ndarray
+    t: jnp.ndarray
+    gd: jnp.ndarray
+    ld: jnp.ndarray
+    gt: jnp.ndarray
+    lt: jnp.ndarray
+
+class ResidualHelmholtzGaoB(ResidualHelmholtzTerm):
+    """Residual GaoB term used by newer ammonia EOS correlations."""
+    n: jnp.ndarray
+    t: jnp.ndarray
+    d: jnp.ndarray
+    eta: jnp.ndarray
+    beta: jnp.ndarray
+    gamma: jnp.ndarray
+    epsilon: jnp.ndarray
+    b: jnp.ndarray
+
+class ResidualHelmholtzAssociating(ResidualHelmholtzTerm):
+    """Residual SAFT associating term."""
+    a: float
+    m: float
+    epsilonbar: float
+    vbarn: float
+    kappabar: float
+
 class ResidualHelmholtzNonAnalytic(ResidualHelmholtzTerm):
     """Residual non-analytic critical-region term."""
     n: jax.Array
@@ -254,12 +291,11 @@ class FluidParameters(eqx.Module):
         # Handle list vs dict
         fluid = data[0] if isinstance(data, list) else data
 
-        
-        # Access the first EOS formulation
+        # Select the most compatible EOS formulation for the currently implemented term set.
         if 'EOS' not in fluid or not fluid['EOS']:
             raise ValueError("No EOS found in fluid data")
-        
-        eos = fluid['EOS'][0]
+
+        eos = cls._select_eos(fluid['INFO']['NAME'], fluid['EOS'])
         
         # Parse Ideal Terms
         alpha0 = []
@@ -307,11 +343,22 @@ class FluidParameters(eqx.Module):
                  ))
             elif t_type == 'IdealGasHelmholtzCP0PolyT':
                  alpha0.append(IdealHelmholtzCP0PolyT(
-                     jnp.array(term['c']),
-                     jnp.array(term['t']),
-                     float(term['T0']),
-                     float(term['Tc'])
+                    jnp.array(term['c']),
+                    jnp.array(term['t']),
+                    float(term['T0']),
+                    float(term['Tc'])
                  ))
+            elif t_type == 'IdealGasHelmholtzCP0AlyLee':
+                A, B, C, D, E = [float(value) for value in term['c']]
+                T0 = float(term['T0'])
+                Tc = float(term['Tc'])
+                alpha0.append(IdealHelmholtzCP0Constant(A, T0, Tc, jnp.array([])))
+                alpha0.append(IdealHelmholtzPlanckEinsteinGeneralized(
+                    jnp.array([B, -D]),
+                    jnp.array([-2.0 * C / Tc, -2.0 * E / Tc]),
+                    jnp.array([1.0, 1.0]),
+                    jnp.array([-1.0, 1.0]),
+                ))
 
         # Parse Residual Terms
         alphar = []
@@ -335,6 +382,43 @@ class FluidParameters(eqx.Module):
                     jnp.array(term['beta']),
                     jnp.array(term['gamma'])
                 ))
+            elif t_type == 'ResidualHelmholtzExponential':
+                alphar.append(ResidualHelmholtzExponential(
+                    n=jnp.array(term['n']),
+                    d=jnp.array(term['d']),
+                    t=jnp.array(term['t']),
+                    g=jnp.array(term['g']),
+                    l=jnp.array(term['l']),
+                ))
+            elif t_type == 'ResidualHelmholtzDoubleExponential':
+                alphar.append(ResidualHelmholtzDoubleExponential(
+                    n=jnp.array(term['n']),
+                    d=jnp.array(term['d']),
+                    t=jnp.array(term['t']),
+                    gd=jnp.array(term['gd']),
+                    ld=jnp.array(term['ld']),
+                    gt=jnp.array(term['gt']),
+                    lt=jnp.array(term['lt']),
+                ))
+            elif t_type == 'ResidualHelmholtzGaoB':
+                alphar.append(ResidualHelmholtzGaoB(
+                    n=jnp.array(term['n']),
+                    t=jnp.array(term['t']),
+                    d=jnp.array(term['d']),
+                    eta=jnp.array(term['eta']),
+                    beta=jnp.array(term['beta']),
+                    gamma=jnp.array(term['gamma']),
+                    epsilon=jnp.array(term['epsilon']),
+                    b=jnp.array(term['b']),
+                ))
+            elif t_type == 'ResidualHelmholtzAssociating':
+                alphar.append(ResidualHelmholtzAssociating(
+                    a=float(term['a']),
+                    m=float(term['m']),
+                    epsilonbar=float(term['epsilonbar']),
+                    vbarn=float(term['vbarn']),
+                    kappabar=float(term['kappabar']),
+                ))
             elif t_type == 'ResidualHelmholtzNonAnalytic':
                 alphar.append(ResidualHelmholtzNonAnalytic(
                     n=jnp.array(term['n']),
@@ -350,6 +434,16 @@ class FluidParameters(eqx.Module):
         # Critical and Reducing points
         crit = fluid['STATES']['critical']
         reducing = eos['STATES']['reducing']
+        superanc = eos.get('SUPERANCILLARY', {})
+        crit_anc = superanc.get('crit_anc', {})
+        superanc_meta = superanc.get('meta', {})
+        sat_min_liquid = eos['STATES'].get('sat_min_liquid', {})
+        sat_min_vapor = eos['STATES'].get('sat_min_vapor', {})
+        rhoc_true = (
+            crit_anc.get('rhoc / mol/m^3')
+            or superanc_meta.get('rhocrittrue / mol/m^3')
+            or crit['rhomolar']
+        )
         
         # Ancillaries
         anc = fluid.get('ANCILLARIES', {})
@@ -373,7 +467,7 @@ class FluidParameters(eqx.Module):
             name=fluid['INFO']['NAME'],
             aliases=list(fluid.get('INFO', {}).get('ALIASES', [])),
             Tc=float(crit['T']),
-            rhoc=float(crit['rhomolar']),
+            rhoc=float(rhoc_true),
             Pc=float(crit['p']),
             Tr=float(reducing['T']),
             rhor=float(reducing['rhomolar']),
@@ -382,10 +476,10 @@ class FluidParameters(eqx.Module):
             acentric=float(eos.get('acentric', 0.0)),
             Tmin=float(eos.get('Ttriple', fluid.get('STATES', {}).get('triple_liquid', {}).get('T', crit['T']))),
             Tmax=float(eos.get('T_max', crit['T'])),
-            Pmin=float(fluid.get('STATES', {}).get('triple_vapor', {}).get('p', 0.0)),
+            Pmin=float(sat_min_vapor.get('p', fluid.get('STATES', {}).get('triple_vapor', {}).get('p', 0.0))),
             Pmax=float(eos.get('p_max', crit['p'])),
             Ttriple=float(eos.get('Ttriple', fluid.get('STATES', {}).get('triple_liquid', {}).get('T', crit['T']))),
-            Ptriple=float(fluid.get('STATES', {}).get('triple_liquid', {}).get('p', fluid.get('STATES', {}).get('triple_vapor', {}).get('p', 0.0))),
+            Ptriple=float(sat_min_liquid.get('p', fluid.get('STATES', {}).get('triple_liquid', {}).get('p', fluid.get('STATES', {}).get('triple_vapor', {}).get('p', 0.0)))),
             pseudo_pure=bool(eos.get('pseudo_pure', False)),
             alpha0=alpha0,
             alphar=alphar,
@@ -397,6 +491,58 @@ class FluidParameters(eqx.Module):
             viscosity=cls._parse_viscosity(trans.get('viscosity')),
             conductivity=cls._parse_conductivity(trans.get('conductivity'), float(crit['T']))
         )
+
+    @staticmethod
+    def _select_eos(fluid_name, eos_entries):
+        """Pick the CoolProp-default-compatible EOS entry for a fluid."""
+        preferred_index = {
+            "Ammonia": 0,
+            "Methanol": 0,
+            "R1234yf": 1,
+        }.get(fluid_name)
+        if preferred_index is not None and 0 <= preferred_index < len(eos_entries):
+            return eos_entries[preferred_index]
+
+        supported_alpha0 = {
+            'IdealGasHelmholtzLead',
+            'IdealGasHelmholtzLogTau',
+            'IdealGasHelmholtzPower',
+            'IdealGasHelmholtzPlanckEinstein',
+            'IdealGasHelmholtzPlanckEinsteinFunctionT',
+            'IdealGasHelmholtzPlanckEinsteinGeneralized',
+            'IdealGasHelmholtzEnthalpyEntropyOffset',
+            'IdealHelmholtzPlanckEinsteinCP',
+            'IdealGasHelmholtzCP0Constant',
+            'IdealGasHelmholtzCP0PolyT',
+            'IdealGasHelmholtzCP0AlyLee',
+        }
+        supported_alphar = {
+            'ResidualHelmholtzPower',
+            'ResidualHelmholtzGaussian',
+            'ResidualHelmholtzExponential',
+            'ResidualHelmholtzDoubleExponential',
+            'ResidualHelmholtzGaoB',
+            'ResidualHelmholtzAssociating',
+            'ResidualHelmholtzNonAnalytic',
+        }
+
+        def score(entry):
+            a0_unknown = {
+                term.get('type') for term in entry.get('alpha0', [])
+                if term.get('type') not in supported_alpha0
+            }
+            ar_unknown = {
+                term.get('type') for term in entry.get('alphar', [])
+                if term.get('type') not in supported_alphar
+            }
+            return (len(a0_unknown) + len(ar_unknown), len(ar_unknown), len(a0_unknown))
+
+        best_idx, best_entry, best_score = 0, eos_entries[0], score(eos_entries[0])
+        for idx, entry in enumerate(eos_entries[1:], start=1):
+            entry_score = score(entry)
+            if entry_score < best_score:
+                best_idx, best_entry, best_score = idx, entry, entry_score
+        return best_entry
 
 
     @staticmethod

@@ -3,25 +3,10 @@ import numpy as np
 import pytest
 
 import chillprop.highlevel as CH
+from fluid_catalog import SUPPORTED_FLUIDS
 
 
 jax.config.update("jax_enable_x64", True)
-
-SUPPORTED_FLUIDS = [
-    "Air",
-    "Argon",
-    "CarbonDioxide",
-    "Ethane",
-    "Hydrogen",
-    "IsoButane",
-    "Methane",
-    "n-Butane",
-    "n-Dodecane",
-    "Nitrogen",
-    "Oxygen",
-    "Propane",
-    "Water",
-]
 
 GRAD_RTOL = 1e-6
 FD_T_STEP = 1e-4
@@ -34,9 +19,16 @@ def _rel_err(a, b):
     return abs(a - b) / denom
 
 
+def _stable_temperature(fluid, scale, margin):
+    Tmin = CH.PropsSI("Tmin", fluid)
+    Tmax = CH.PropsSI("Tmax", fluid)
+    Tc = CH.PropsSI("Tcrit", fluid)
+    return min(max(Tc * scale, Tmin + margin), Tmax * 0.8)
+
+
 @pytest.mark.parametrize("fluid", SUPPORTED_FLUIDS)
 def test_density_gradient_vs_finite_difference(fluid):
-    T0 = max(CH.PropsSI("Tcrit", fluid) * 1.35, CH.PropsSI("Tmin", fluid) + 10.0)
+    T0 = _stable_temperature(fluid, 1.35, 10.0)
     P0 = max(2e5, 0.35 * CH.PropsSI("pcrit", fluid))
 
     def rho_of_T(T):
@@ -49,7 +41,7 @@ def test_density_gradient_vs_finite_difference(fluid):
 
 @pytest.mark.parametrize("fluid", SUPPORTED_FLUIDS)
 def test_enthalpy_gradient_vs_finite_difference(fluid):
-    T0 = max(CH.PropsSI("Tcrit", fluid) * 1.25, CH.PropsSI("Tmin", fluid) + 15.0)
+    T0 = _stable_temperature(fluid, 1.25, 15.0)
     P0 = max(2e5, 0.4 * CH.PropsSI("pcrit", fluid))
 
     def h_of_P(P):
@@ -62,7 +54,7 @@ def test_enthalpy_gradient_vs_finite_difference(fluid):
 
 @pytest.mark.parametrize("fluid", SUPPORTED_FLUIDS)
 def test_pressure_gradient_vs_finite_difference(fluid):
-    T0 = max(CH.PropsSI("Tcrit", fluid) * 1.2, CH.PropsSI("Tmin", fluid) + 10.0)
+    T0 = _stable_temperature(fluid, 1.2, 10.0)
     P0 = max(2e5, 0.45 * CH.PropsSI("pcrit", fluid))
     rho0 = CH.PropsSI("Dmolar", "T", T0, "P", P0, fluid)
     drho = max(abs(rho0) * FD_RHO_STEP_FACTOR, 1e-3)

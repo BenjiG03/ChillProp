@@ -1,6 +1,7 @@
 # ChillProp
 
 ChillProp is a JAX-based thermodynamic property library with a CoolProp-like API for supported pure and pseudo-pure fluids.
+https://chillprop.readthedocs.io/en/latest/
 
 ## Install
 

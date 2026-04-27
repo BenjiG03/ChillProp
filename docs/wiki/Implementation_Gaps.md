@@ -95,11 +95,12 @@ Transport-model implementations exist for more fluids than the minimum automated
 
 - `Argon`
 - `Hydrogen`
+- `n-Decane`
 - `Nitrogen`
 - `Oxygen`
 - `Propane`
 
-This distinction matters for contributors because "implemented" and "covered by the regression suite" are not identical statements.
+Two-phase property support is also broader than the strict automated saturation-parity subset documented in [Validation](Validation.md). This distinction matters for contributors because "implemented" and "covered by the regression suite" are not identical statements.
 
 ## Numerical Scope
 
