@@ -117,6 +117,14 @@ class ResidualHelmholtzAssociating(ResidualHelmholtzTerm):
     vbarn: float
     kappabar: float
 
+class ResidualHelmholtzLemmon2005(ResidualHelmholtzTerm):
+    """Residual Lemmon-Jacobsen 2005 exponential form used for R125."""
+    n: jnp.ndarray
+    d: jnp.ndarray
+    t: jnp.ndarray
+    l: jnp.ndarray
+    m: jnp.ndarray
+
 class ResidualHelmholtzNonAnalytic(ResidualHelmholtzTerm):
     """Residual non-analytic critical-region term."""
     n: jax.Array
@@ -419,6 +427,14 @@ class FluidParameters(eqx.Module):
                     vbarn=float(term['vbarn']),
                     kappabar=float(term['kappabar']),
                 ))
+            elif t_type == 'ResidualHelmholtzLemmon2005':
+                alphar.append(ResidualHelmholtzLemmon2005(
+                    n=jnp.array(term['n']),
+                    d=jnp.array(term['d']),
+                    t=jnp.array(term['t']),
+                    l=jnp.array(term['l']),
+                    m=jnp.array(term['m']),
+                ))
             elif t_type == 'ResidualHelmholtzNonAnalytic':
                 alphar.append(ResidualHelmholtzNonAnalytic(
                     n=jnp.array(term['n']),
@@ -439,10 +455,22 @@ class FluidParameters(eqx.Module):
         superanc_meta = superanc.get('meta', {})
         sat_min_liquid = eos['STATES'].get('sat_min_liquid', {})
         sat_min_vapor = eos['STATES'].get('sat_min_vapor', {})
+        Tc_true = (
+            crit_anc.get('Tc / K')
+            or superanc_meta.get('Tcrittrue / K')
+            or crit['T']
+        )
         rhoc_true = (
             crit_anc.get('rhoc / mol/m^3')
             or superanc_meta.get('rhocrittrue / mol/m^3')
             or crit['rhomolar']
+        )
+        Tmin_true = (
+            sat_min_liquid.get('T')
+            or superanc_meta.get('Ttriple / K')
+            or eos.get('Ttriple')
+            or fluid.get('STATES', {}).get('triple_liquid', {}).get('T')
+            or crit['T']
         )
         
         # Ancillaries
@@ -463,10 +491,10 @@ class FluidParameters(eqx.Module):
         # Transport
         trans = fluid.get('TRANSPORT', {})
         
-        return cls(
+        provisional = cls(
             name=fluid['INFO']['NAME'],
             aliases=list(fluid.get('INFO', {}).get('ALIASES', [])),
-            Tc=float(crit['T']),
+            Tc=float(Tc_true),
             rhoc=float(rhoc_true),
             Pc=float(crit['p']),
             Tr=float(reducing['T']),
@@ -474,11 +502,11 @@ class FluidParameters(eqx.Module):
             R=float(eos['gas_constant']),
             M=float(eos['molar_mass']),
             acentric=float(eos.get('acentric', 0.0)),
-            Tmin=float(eos.get('Ttriple', fluid.get('STATES', {}).get('triple_liquid', {}).get('T', crit['T']))),
+            Tmin=float(Tmin_true),
             Tmax=float(eos.get('T_max', crit['T'])),
             Pmin=float(sat_min_vapor.get('p', fluid.get('STATES', {}).get('triple_vapor', {}).get('p', 0.0))),
             Pmax=float(eos.get('p_max', crit['p'])),
-            Ttriple=float(eos.get('Ttriple', fluid.get('STATES', {}).get('triple_liquid', {}).get('T', crit['T']))),
+            Ttriple=float(Tmin_true),
             Ptriple=float(sat_min_liquid.get('p', fluid.get('STATES', {}).get('triple_liquid', {}).get('p', fluid.get('STATES', {}).get('triple_vapor', {}).get('p', 0.0)))),
             pseudo_pure=bool(eos.get('pseudo_pure', False)),
             alpha0=alpha0,
@@ -491,6 +519,10 @@ class FluidParameters(eqx.Module):
             viscosity=cls._parse_viscosity(trans.get('viscosity')),
             conductivity=cls._parse_conductivity(trans.get('conductivity'), float(crit['T']))
         )
+        from chillprop.core import pressure
+
+        Pc_true = float(pressure(provisional, jnp.array(float(rhoc_true)), jnp.array(float(Tc_true))))
+        return eqx.tree_at(lambda params: params.Pc, provisional, Pc_true)
 
     @staticmethod
     def _select_eos(fluid_name, eos_entries):
@@ -523,6 +555,7 @@ class FluidParameters(eqx.Module):
             'ResidualHelmholtzDoubleExponential',
             'ResidualHelmholtzGaoB',
             'ResidualHelmholtzAssociating',
+            'ResidualHelmholtzLemmon2005',
             'ResidualHelmholtzNonAnalytic',
         }
 

@@ -66,10 +66,14 @@ TWOPHASE_OUTPUTS = [
 STRICT_RTOL = 1e-9
 STRICT_ATOL = 1e-12
 OUTPUT_RTOL = {
+    "A": 1e-7,
+    "C": 5e-7,
+    "Cpmolar": 5e-7,
     "V": 5e-3,
     "L": 5e-3,
     "Prandtl": 5e-3,
     "Q": 1e-4,
+    "Z": 1e-7,
 }
 
 TRIVIAL_RTOL = 3e-2

@@ -31,15 +31,6 @@ STATS_PATH = ROOT / "docs" / "wiki" / "validation_stats.json"
 SPHINX_VALIDATION = ROOT / "docs" / "validation.rst"
 WIKI_VALIDATION = ROOT / "docs" / "wiki" / "Validation.md"
 
-PLOT_FLUIDS = [
-    "Ammonia",
-    "Helium",
-    "Methanol",
-    "n-Pentane",
-    "n-Decane",
-    "R1234yf",
-]
-
 PLOT_OUTPUTS = [
     ("Dmolar", "Molar Density"),
     ("Hmolar", "Molar Enthalpy"),
@@ -318,11 +309,11 @@ def write_sphinx_validation(stats: dict) -> None:
             "Plot Gallery",
             "------------",
             "",
-            "The complete per-fluid single-phase parity plot set is stored in ``docs/plots/validated``. Selected expansion-era plots are shown below.",
+            "The complete per-fluid single-phase parity plot set is stored in ``docs/plots/validated`` and indexed below.",
             "",
         ]
     )
-    for fluid in PLOT_FLUIDS:
+    for fluid in SUPPORTED_FLUIDS:
         lines.extend(
             [
                 fluid,
@@ -380,11 +371,11 @@ def write_wiki_validation(stats: dict) -> None:
             "",
             "## Plot Gallery",
             "",
-            "The complete per-fluid single-phase parity plot set is stored in `docs/plots/validated`. Selected expansion-era plots are shown below.",
+            "The complete per-fluid single-phase parity plot set is stored in `docs/plots/validated` and indexed below.",
             "",
         ]
     )
-    for fluid in PLOT_FLUIDS:
+    for fluid in SUPPORTED_FLUIDS:
         lines.extend([f"### `{fluid}`", "", f"![{fluid} parity plot](../plots/validated/{fluid}_parity.png)", ""])
     WIKI_VALIDATION.write_text("\n".join(lines), encoding="utf-8")
 

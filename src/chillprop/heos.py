@@ -18,6 +18,7 @@ from chillprop.parameters import (
     ResidualHelmholtzDoubleExponential,
     ResidualHelmholtzGaoB,
     ResidualHelmholtzAssociating,
+    ResidualHelmholtzLemmon2005,
     ResidualHelmholtzNonAnalytic,
 )
 
@@ -171,6 +172,13 @@ def alphar_associating(term: ResidualHelmholtzAssociating, tau: jax.Array, delta
     X = 2.0 / (jnp.sqrt(1.0 + 4.0 * deltabar * delta) + 1.0)
     return term.a * term.m * (jnp.log(X) - 0.5 * X + 0.5)
 
+def alphar_lemmon2005(term: ResidualHelmholtzLemmon2005, tau: jax.Array, delta: jax.Array) -> jax.Array:
+    """Evaluate the Lemmon-Jacobsen 2005 residual exponential form."""
+    delta_exp = jnp.where(term.l != 0, jnp.exp(-(delta ** term.l)), 1.0)
+    tau_exp = jnp.where(term.m != 0, jnp.exp(-(tau ** term.m)), 1.0)
+    val = term.n * (delta ** term.d) * (tau ** term.t) * delta_exp * tau_exp
+    return jnp.sum(val)
+
 def alphar_nonanalytic(term: ResidualHelmholtzNonAnalytic, tau: jax.Array, delta: jax.Array) -> jax.Array:
     """
     Non-analytic residual Helmholtz term matching CoolProp's ResidualHelmholtzNonAnalytic.
@@ -245,6 +253,8 @@ def alphar(params: FluidParameters, tau: jax.Array, delta: jax.Array) -> jax.Arr
             val += alphar_gaob(term, tau, delta)
         elif isinstance(term, ResidualHelmholtzAssociating):
             val += alphar_associating(term, tau, delta)
+        elif isinstance(term, ResidualHelmholtzLemmon2005):
+            val += alphar_lemmon2005(term, tau, delta)
         elif isinstance(term, ResidualHelmholtzNonAnalytic):
             val += alphar_nonanalytic(term, tau, delta)
     return val

@@ -1,51 +1,24 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
 import CoolProp.CoolProp as CP
 
-SUPPORTED_FLUIDS = [
-    "Air",
-    "Ammonia",
-    "Argon",
-    "CarbonDioxide",
-    "CarbonMonoxide",
-    "Cyclopentane",
-    "Ethane",
-    "Ethanol",
-    "Ethylene",
-    "HeavyWater",
-    "Helium",
-    "Hydrogen",
-    "HydrogenSulfide",
-    "IsoButane",
-    "Isopentane",
-    "Krypton",
-    "Methane",
-    "Methanol",
-    "n-Butane",
-    "n-Decane",
-    "n-Dodecane",
-    "n-Heptane",
-    "n-Hexane",
-    "n-Octane",
-    "n-Pentane",
-    "n-Undecane",
-    "Neon",
-    "Neopentane",
-    "Nitrogen",
-    "NitrousOxide",
-    "Oxygen",
-    "Propane",
-    "Propylene",
-    "R134a",
-    "R32",
-    "R1234yf",
-    "R1234ze(E)",
-    "R404A",
-    "R407C",
-    "R410A",
-    "SulfurDioxide",
-    "SulfurHexafluoride",
-    "Water",
-    "Xenon",
-]
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "src" / "chillprop" / "data"
+
+
+def _load_supported_fluids() -> list[str]:
+    fluids: list[str] = []
+    for path in sorted(DATA_DIR.glob("*.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        fluid = payload[0] if isinstance(payload, list) else payload
+        fluids.append(str(fluid.get("INFO", {}).get("NAME", path.stem)))
+    return sorted(set(fluids), key=str.casefold)
+
+
+SUPPORTED_FLUIDS = _load_supported_fluids()
 
 TRANSPORT_VALIDATED_FLUIDS = [
     "Argon",
@@ -56,22 +29,49 @@ TRANSPORT_VALIDATED_FLUIDS = [
     "Propane",
 ]
 
+TWOPHASE_EXCLUDED_FLUIDS = {
+    "CycloPropane",
+    "D4",
+    "D5",
+    "D6",
+    "Dichloroethane",
+    "DiethylEther",
+    "Ethanol",
+    "EthyleneOxide",
+    "HFE143m",
+    "Hydrogen",
+    "HydrogenSulfide",
+    "Isohexane",
+    "Krypton",
+    "MD3M",
+    "Methanol",
+    "n-Dodecane",
+    "n-Heptane",
+    "n-Hexane",
+    "n-Nonane",
+    "NitrousOxide",
+    "Oxygen",
+    "ParaHydrogen",
+    "Propyne",
+    "R114",
+    "R124",
+    "R1243zf",
+    "R134a",
+    "R125",
+    "R13",
+    "R14",
+    "R161",
+    "R21",
+    "R236EA",
+    "R245fa",
+    "R365MFC",
+    "R1234ze(E)",
+    "R40",
+    "R41",
+}
+
 TWOPHASE_VALIDATED_FLUIDS = [
     fluid
     for fluid in SUPPORTED_FLUIDS
-    if CP.get_fluid_param_string(fluid, "pure") == "true"
-    and fluid not in {
-        "Ethanol",
-        "Hydrogen",
-        "HydrogenSulfide",
-        "Krypton",
-        "Methanol",
-        "n-Dodecane",
-        "n-Heptane",
-        "n-Hexane",
-        "NitrousOxide",
-        "Oxygen",
-        "R134a",
-        "R1234ze(E)",
-    }
+    if CP.get_fluid_param_string(fluid, "pure") == "true" and fluid not in TWOPHASE_EXCLUDED_FLUIDS
 ]

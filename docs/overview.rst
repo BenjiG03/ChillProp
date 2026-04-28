@@ -6,13 +6,9 @@ ChillProp provides thermodynamic and transport properties through a high-level A
 Current Catalog
 ---------------
 
-The bundled runtime catalog currently includes ``44`` supported fluids spanning:
+The bundled runtime catalog is driven directly from the JSON definitions shipped in ``src/chillprop/data``. That catalog now spans permanent gases, hydrocarbons, siloxanes, solvents, legacy and modern refrigerants, cryogenic hydrogen/deuterium variants, and other HEOS pure or pseudo-pure fluids imported from CoolProp.
 
-* Air and permanent gases such as ``Air``, ``Helium``, ``Hydrogen``, ``Nitrogen``, ``Oxygen``, ``Neon``, ``Argon``, ``Krypton``, and ``Xenon``.
-* Hydrocarbons and related organics such as ``Methane``, ``Ethane``, ``Propane``, ``n-Pentane``, ``n-Decane``, ``n-Undecane``, ``n-Dodecane``, ``Cyclopentane``, ``Isopentane``, ``Neopentane``, ``Ethanol``, and ``Methanol``.
-* Refrigerants and specialty fluids such as ``R32``, ``R134a``, ``R1234yf``, ``R1234ze(E)``, ``R404A``, ``R407C``, and ``R410A``.
-
-The authoritative supported-fluid list is maintained in ``tests/fluid_catalog.py`` and mirrored in :doc:`validation`.
+The authoritative supported-fluid list is maintained in ``tests/fluid_catalog.py`` by iterating over the bundled JSON payloads, and the published validation tables and plot index are regenerated from the same list in :doc:`validation`.
 
 Project Positioning
 -------------------

@@ -126,6 +126,9 @@ _PHASE_INDEX = {
 
 _DERIVATIVE_RE = re.compile(r"^d\((?P<of>[^)]+)\)/d\((?P<wrt>[^)]+)\)\|(?P<const>.+)$")
 _SUPPORTED_BACKENDS = {"", "HEOS"}
+_FLUID_ALIAS_OVERRIDES = {
+    "n-propane": "Propane",
+}
 _TRIVIAL_KEYS = {
     "Tcrit",
     "T_critical",
@@ -187,6 +190,8 @@ def _normalize_fluid_name(fluid: str) -> str:
     if any(token in fluid_name for token in ("&", "[", "]")) or fluid_name.endswith(".mix"):
         raise NotImplementedError("Mixture support is not implemented in pure-JAX ChillProp")
     key = fluid_name.lower()
+    if key in _FLUID_ALIAS_OVERRIDES:
+        return _FLUID_ALIAS_OVERRIDES[key]
     if key in _ALIAS_CACHE:
         return _ALIAS_CACHE[key]
     return fluid_name
